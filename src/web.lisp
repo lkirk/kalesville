@@ -23,8 +23,30 @@
 ;;
 ;; Routing rules
 
-(defroute "/" ()
+@route GET "/"
+(defun index ()
   (render #P"index.html"))
+
+@route GET "/api/comments"
+(defun comments ()
+  (render-json
+   (with-connection (db)
+     (retrieve-all
+      (yield
+       (select :*
+	 (from :user_comments)))))))
+
+
+
+@route POST "/api/post-comment"
+(defun insert-comment (&key (|user|) (|comment|))
+  ;; (format nil "the user ~A has just posted ~A~%" |user| |comment|)
+  (with-connection (db)
+    (execute
+     (insert-into :user_comments
+       (set= :id (uuid:make-v4-uuid)
+	     :user |user|
+	     :comment |comment|)))))
 
 ;;
 ;; Error pages
