@@ -20,10 +20,11 @@
 (defparameter *template-directory* (merge-pathnames #P"templates/" *application-root*))
 
 (defconfig :common
-  `(:databases ((:maindb :sqlite3 :database-name ":memory:"))))
+    `(:debug T
+      :databases ((:maindb :sqlite3 :database-name #P"/home/lkirk/test-db.sqlite"))))
 
 (defconfig |development|
-  '())
+    '())
 
 (defconfig |production|
   '())
