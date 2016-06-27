@@ -15,14 +15,12 @@
 
 ;;
 ;; Application
-
 (defclass <web> (<app>) ())
 (defvar *web* (make-instance '<web>))
 (clear-routing-rules *web*)
 
 ;;
 ;; Routing rules
-
 @route GET "/"
 (defun index ()
   (render #P"index.html"))
@@ -36,21 +34,29 @@
        (select :*
 	 (from :user_comments)))))))
 
-
-
 @route POST "/api/post-comment"
-(defun insert-comment (&key (|user|) (|comment|))
-  ;; (format nil "the user ~A has just posted ~A~%" |user| |comment|)
-  (with-connection (db)
-    (execute
-     (insert-into :user_comments
-       (set= :id (uuid:make-v4-uuid)
-	     :user |user|
-	     :comment |comment|)))))
+(defun insert-comment (&key (|author|) (|text|))
+  ;; (format nil "the author ~A has just posted ~A~%" |author| |comment|)
+  (let (uid row)
+    (setq row (make-hash-table))
+    (setq uid (format nil "~A" (uuid:make-v4-uuid))) ; coerces uuid to string
+
+    (setf (gethash 'id row) uid)
+    (setf (gethash 'author row) |author|)
+    (setf (gethash 'text row) |text|)
+
+    (with-connection (db)
+      (execute
+       (insert-into :user_comments
+	 (set= :id uid
+	       :author |author|
+	       :text |text|))))
+    (render-json row)
+    )
+  )
 
 ;;
 ;; Error pages
-
 (defmethod on-exception ((app <web>) (code (eql 404)))
   (declare (ignore app))
   (merge-pathnames #P"_errors/404.html"
