@@ -1,4 +1,4 @@
-// tutorial17.js
+// tutorial19.js
 var CommentForm = React.createClass({
     getInitialState: function() {
 	return {author: '', text: ''};
@@ -16,29 +16,30 @@ var CommentForm = React.createClass({
 	if (!text || !author) {
 	    return;
 	}
-	// TODO: send request to the server
+	this.props.onCommentSubmit({author: author, text: text});
 	this.setState({author: '', text: ''});
     },
     render: function() {
 	return (
-	        <form className="commentForm" onSubmit={this.handleSubmit}>
-		<input
+	    <form className="commentForm" onSubmit={this.handleSubmit}>
+	    <input
 	    type="text"
 	    placeholder="Your name"
 	    value={this.state.author}
 	    onChange={this.handleAuthorChange}
-	        />
-		<input
+	    />
+	    <input
 	    type="text"
 	    placeholder="Say something..."
 	    value={this.state.text}
 	    onChange={this.handleTextChange}
-	        />
-		<input type="submit" value="Post" />
-		</form>
+	    />
+	    <input type="submit" value="Post" />
+	    </form>
 	);
     }
 });
+
 
 // tutorial7.js
 var Comment = React.createClass({
@@ -76,6 +77,7 @@ var CommentBox = React.createClass({
 	    }.bind(this)
 	});
     },
+
     handleCommentSubmit: function(comment) {
 	var comments = this.state.data;
 	// Optimistically set an id on the new comment. It will be replaced by an
@@ -85,7 +87,7 @@ var CommentBox = React.createClass({
 	var newComments = comments.concat([comment]);
 	this.setState({data: newComments});
 	$.ajax({
-	    url: this.props.url,
+	    url: this.props.postUrl,
 	    dataType: 'json',
 	    type: 'POST',
 	    data: comment,
@@ -98,13 +100,16 @@ var CommentBox = React.createClass({
 	    }.bind(this)
 	});
     },
+
     getInitialState: function() {
 	return {data: []};
     },
+
     componentDidMount: function() {
 	this.loadCommentsFromServer();
 	setInterval(this.loadCommentsFromServer, this.props.pollInterval);
     },
+
     render: function() {
 	return (
 	        <div className="commentBox">
@@ -114,6 +119,7 @@ var CommentBox = React.createClass({
 		</div>
 	);
     }
+
 });
 
 
@@ -127,15 +133,17 @@ var CommentList = React.createClass({
 		</Comment>
 	    );
 	});
+
 	return (
 	    <div className="commentList">
 	    {commentNodes}
 	    </div>
 	);
+
     }
 });
 
 ReactDOM.render(
-    <CommentBox url="/api/comments" pollInterval={2000} />,
+    <CommentBox url="/api/comments" postUrl="/api/post-comment" pollInterval={2000} />,
     document.getElementById('content')
 );
