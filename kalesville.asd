@@ -22,7 +22,8 @@
 
                ;; for DB
                :datafly
-               :sxql)
+               :sxql
+	       :uuid)
   :components ((:module "src"
                 :components
                 ((:file "main" :depends-on ("config" "view" "db"))
