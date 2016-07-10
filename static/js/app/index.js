@@ -28,7 +28,7 @@ var CommentForm = React.createClass({
 	    value={this.state.author}
 	    onChange={this.handleAuthorChange}
 	    />
-	    <input
+	    <textarea
 	    type="text"
 	    placeholder="Say something..."
 	    value={this.state.text}
@@ -52,9 +52,7 @@ var Comment = React.createClass({
     render: function() {
 	return (
 	        <div className="comment">
-		<h2 className="commentAuthor">
-		{this.props.author}
-	    </h2>
+		<h2 className="commentAuthor">{this.props.author}</h2>
 		<span dangerouslySetInnerHTML={this.rawMarkup()} />
 		</div>
 	);
