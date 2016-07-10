@@ -37,9 +37,8 @@
 @route POST "/api/post-comment"
 (defun insert-comment (&key (|author|) (|text|))
   ;; (format nil "the author ~A has just posted ~A~%" |author| |comment|)
-  (let (uid row)
-    (setq row (make-hash-table))
-    (setq uid (format nil "~A" (uuid:make-v4-uuid))) ; coerces uuid to string
+  (let ((uid (format nil "~A" (uuid:make-v4-uuid))) ; coerces uuid to string
+	(row (make-hash-table)))
 
     (setf (gethash 'id row) uid)
     (setf (gethash 'author row) |author|)
