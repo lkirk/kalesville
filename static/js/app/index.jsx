@@ -1,3 +1,9 @@
+var React = require('react');
+var ReactDOM = require('react-dom');
+var Remarkable = require('remarkable');
+var request = require('superagent');
+
+
 // tutorial19.js
 var CommentForm = React.createClass({
     getInitialState: function() {
@@ -63,17 +69,14 @@ var Comment = React.createClass({
 // tutorial21.js
 var CommentBox = React.createClass({
     loadCommentsFromServer: function() {
-	$.ajax({
-	    url: this.props.url,
-	    dataType: 'json',
-	    cache: false,
-	    success: function(data) {
-		this.setState({data: data});
-	    }.bind(this),
-	    error: function(xhr, status, err) {
-		console.error(this.props.url, status, err.toString());
-	    }.bind(this)
-	});
+	request.get(this.props.url)
+	    .end(function(err,res){
+		if(err || !res.ok){
+		    console.error(err.toString());
+		} else {
+		    this.setState({data: JSON.parse(res.text)});
+		}
+	    }.bind(this));
     },
 
     handleCommentSubmit: function(comment) {
@@ -84,19 +87,24 @@ var CommentBox = React.createClass({
 	comment.id = Date.now();
 	var newComments = comments.concat([comment]);
 	this.setState({data: newComments});
-	$.ajax({
-	    url: this.props.postUrl,
-	    dataType: 'json',
-	    type: 'POST',
-	    data: comment,
-	    success: function(data) {
-		this.setState({data: data});
-	    }.bind(this),
-	    error: function(xhr, status, err) {
-		this.setState({data: comments});
-		console.error(this.props.url, status, err.toString());
-	    }.bind(this)
-	});
+
+	console.log(comment.text);
+	console.log(comment.author);
+	request
+	    .post(this.props.postUrl)
+	    .send({
+		text: comment.text,
+		author: comment.author
+	    })
+	    .end(function(err, res){
+		if (err || !res.ok) {
+		    // this.setState({data: comments});
+		    console.error(this.props.url, err.toString());
+		} else {
+		    console.log('got to here!');
+		    this.setState({data: JSON.parse(res.text)});
+		}
+	    }.bind(this));
     },
 
     getInitialState: function() {
