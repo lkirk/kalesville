@@ -11,3 +11,4 @@ node_modules/
 bundle.js
 bundle.js.map
 *.sqlite
+*.log
