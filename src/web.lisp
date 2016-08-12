@@ -21,12 +21,19 @@
 
 ;;
 ;; Routing rules
-@route GET "/"
-(defun index ()
-  (render #P"index.html"))
 
-@route GET "/api/comments"
+;; return html
+@route GET "/"
+(defun home ()
+  (render #P"home.html"))
+
+@route GET "/comments"
 (defun comments ()
+  (render #P"comments.html"))
+
+;; return json
+@route GET "/api/comments"
+(defun comments-api ()
   (render-json
    (with-connection (db)
      (retrieve-all
