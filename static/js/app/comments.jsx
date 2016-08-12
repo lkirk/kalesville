@@ -28,18 +28,22 @@ var CommentForm = React.createClass({
     render: function() {
 	return (
 	    <form className="commentForm" onSubmit={this.handleSubmit}>
+	    <div>
 	    <input
 	    type="text"
 	    placeholder="Your name"
 	    value={this.state.author}
 	    onChange={this.handleAuthorChange}
-	    />
+		      />
+	    </div>
+	    <div>
 	    <textarea
 	    type="text"
 	    placeholder="Say something..."
 	    value={this.state.text}
 	    onChange={this.handleTextChange}
 	    />
+	    </div>
 	    <input type="submit" value="Post" />
 	    </form>
 	);
@@ -120,8 +124,8 @@ var CommentBox = React.createClass({
 	return (
 	        <div className="commentBox">
 		<h1>Comments</h1>
-		<CommentList data={this.state.data} />
 		<CommentForm onCommentSubmit={this.handleCommentSubmit} />
+		<CommentList data={this.state.data} />
 		</div>
 	);
     }
@@ -132,7 +136,7 @@ var CommentBox = React.createClass({
 // tutorial10.js
 var CommentList = React.createClass({
     render: function() {
-	var commentNodes = this.props.data.map(function(comment) {
+	var commentNodes = this.props.data.reverse().map(function(comment) {
 	    return (
 		<Comment author={comment.author} key={comment.id}>
 		{comment.text}
@@ -148,6 +152,8 @@ var CommentList = React.createClass({
 
     }
 });
+
+exports.CommentBox = CommentBox
 
 ReactDOM.render(
     <CommentBox url="/api/comments" postUrl="/api/post-comment" pollInterval={2000} />,
