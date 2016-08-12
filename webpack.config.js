@@ -5,12 +5,16 @@ var BUILD_DIR = path.resolve(__dirname, 'static/js/public');
 var APP_DIR = path.resolve(__dirname, 'static/js/app');
 
 var config = {
-    entry: APP_DIR + '/index.jsx',
+    entry: {
+	comments: APP_DIR + "/comments.jsx",
+	home: APP_DIR + "/home.jsx",
+    },
+
     output: {
 	path: BUILD_DIR,
-	filename: 'bundle.js'
+	filename: "[name].entry.chunk.js"
     },
-    
+
     module : {
 	loaders : [
 	    {
