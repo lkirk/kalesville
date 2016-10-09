@@ -1,0 +1,35 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#| create a user comments table
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  #+quicklisp (ql:quickload '(:kalesville) :silent t))
+
+(defpackage :ros.script.001-user-comments-table.3684947233
+  (:use :cl))
+(in-package :ros.script.001-user-comments-table.3684947233)
+
+
+(defun create-user-comments-table ()
+  (let ((db (kalesville.config:config :databases))
+	(env (kalesville.config:appenv))
+	(table (sxql:create-table :user-comments
+		   ((id :type 'string
+			:primary-key t)
+		    (user :type 'string
+			  :not-null t)
+		    (comment :type 'string
+			     :not-null t)))))
+    (assert (not (null env))
+	    (env) "APP_ENV not set. Please specify a valid APP_ENV")
+    (format t "creating table with the following sql cmd:~%~A~%" table)
+    (format t "==> db connection: <==~%~A~%" db)
+    (format t "==> env: <==~%~A~%" env)))
+
+;; (defun run-migration
+;;     (kalesville.db:with-connection 
+    
+
+(defun main ()
+  (create-user-comments-table))
