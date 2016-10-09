@@ -5,8 +5,7 @@
   (:import-from :lack.builder
                 :builder)
   (:import-from :ppcre
-                :scan
-                :regex-replace)
+                :scan)
   (:import-from :kalesville.web
                 :*web*)
   (:import-from :kalesville.config
