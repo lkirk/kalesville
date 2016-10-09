@@ -8,6 +8,7 @@ var config = {
     entry: {
 	comments: APP_DIR + "/comments.jsx",
 	home: APP_DIR + "/home.jsx",
+	recipes: APP_DIR + "/recipes.jsx"
     },
 
     output: {

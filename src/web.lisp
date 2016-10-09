@@ -31,6 +31,10 @@
 (defun comments ()
   (render #P"comments.html"))
 
+@route GET "/recipes"
+(defun recipes ()
+  (render #P"recipes.html"))
+
 ;; return json
 @route GET "/api/comments"
 (defun comments-api ()
