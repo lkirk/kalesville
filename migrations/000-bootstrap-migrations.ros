@@ -7,11 +7,17 @@ exec ros -Q -- $0 "$@"
   #+quicklisp (ql:quickload '(:kalesville) :silent t))
 
 (defpackage :ros.script.000-bootstrap-migrations.ros.3684972007
-  (:use :cl))
+  (:use :cl
+        :sxql
+	:kalesville.migrations))
 (in-package :ros.script.000-bootstrap-migrations.ros.3684972007)
 
-(defun create-migration-table ()
-  )
+(defvar migration-id 000)
+
+(defvar sql
+  (create-table :migration
+      ((id :type 'integer
+	   :primary-key t))))
 
 (defun main ()
-  t)
+  (km-create-table migration-id sql))
