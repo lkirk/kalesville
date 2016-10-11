@@ -15,13 +15,13 @@ exec ros -Q -- $0 "$@"
 (defvar migration-id 001)
 
 (defvar sql
-  (create-table :user-comments
+  (create-table :user_comments
       ((id :type 'string
 	   :primary-key t)
-       (user :type 'string
-	     :not-null t)
-       (comment :type 'string
-		:not-null t))))
+       (author :type 'string
+	       :not-null t)
+       (text :type 'string
+	     :not-null t))))
 
 
 (defun main ()
