@@ -19,18 +19,19 @@
 (defparameter *static-directory*   (merge-pathnames #P"static/" *application-root*))
 (defparameter *template-directory* (merge-pathnames #P"templates/" *application-root*))
 
-(defconfig :common
+(defconfig :common ;; source of all common config
     `(:application-root ,(asdf:component-pathname (asdf:find-system :kalesville))))
 
-(defconfig |development|
+(defconfig |production|
+    '(:debug nil))
+
+(defconfig |development| ;; useful for web dev, mock datasets
     '(:debug T
       :databases ((:maindb :sqlite3 :database-name #P"./dev-db.sqlite"))))
 
-(defconfig |production|
-  '())
-
-(defconfig |test|
-  '())
+(defconfig |test| ;; for more low level tests, blank db
+    '(:debug T
+      :databases ((:maindb :sqlite3 :database-name #P"./test-db.sqlite"))))
 
 (defun config (&optional key)
   (envy:config #.(package-name *package*) key))
