@@ -53,3 +53,8 @@ li.dropdown {
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+.subpage {
+    margin:  10px 5px 15px 20px;
+    padding: 12px 16px;
+}
