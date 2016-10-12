@@ -23,7 +23,7 @@ class App extends Component {
 	      <TabPanel>
 		<h2>Hey there, welcome!</h2>
 		<div>
-		  what do you think? <a href='http://localhost:5000/comments'>click here to say something</a>
+		  what do you think? <a href='/comments'>click here to say something</a>
 		</div>
 	      </TabPanel>
 	      <TabPanel>
