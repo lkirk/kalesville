@@ -35,6 +35,10 @@
 (defun recipes ()
   (render #P"recipes.html"))
 
+@route GET "/about"
+(defun about ()
+  (render #P"about.html"))
+
 ;; return json
 @route GET "/api/comments"
 (defun comments-api ()
