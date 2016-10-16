@@ -49,6 +49,15 @@
        (select :*
 	 (from :user_comments)))))))
 
+@route GET "/api/recipes"
+(defun recipes-api ()
+  (render-json
+   (with-connection (db)
+     (retrieve-all
+      (yield
+       (select :*
+	 (from :recipes)))))))
+
 @route POST "/api/post-comment"
 (defun insert-comment (&key (|author|) (|text|))
   ;; (format nil "the author ~A has just posted ~A~%" |author| |comment|)
@@ -65,9 +74,27 @@
 	 (set= :id uid
 	       :author |author|
 	       :text |text|))))
-    (render-json row)
-    )
-  )
+    (render-json row)))
+
+@route POST "/api/post-recipe"
+(defun insert-recipe (&key (|title|) (|ingredients|) (|procedures|))
+  (let ((uid (format nil "~A" (uuid:make-v4-uuid))) ; coerces uuid to string
+	(row (make-hash-table)))
+
+    (setf (gethash 'id row) uid)
+    (setf (gethash 'title row) |title|)
+    (setf (gethash 'ingredients row) |ingredients|)
+    (setf (gethash 'procedures row) |procedures|)
+
+    (with-connection (db)
+      (execute
+       (insert-into :recipes
+	 (set= :id uid
+	       :title |title|
+	       :ingredients |ingredients|
+	       :procedures |procedures|))))
+    (render-json row)))
+
 
 ;;
 ;; Error pages

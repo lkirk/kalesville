@@ -1,0 +1,30 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#| <Put a one-line description here>
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  #+quicklisp (ql:quickload '(:kalesville) :silent t))
+
+(defpackage :ros.script.002-recipes-table.ros.3685331995
+  (:use :cl
+        :sxql
+	:kalesville.migrations))
+(in-package :ros.script.002-recipes-table.ros.3685331995)
+
+(defvar migration-id 002)
+
+(defvar sql
+  (create-table :recipes
+      ((id :type 'string
+	   :primary-key t)
+       (title :type 'string
+	      :not-null t)
+       (ingredients :type 'string
+		    :not-null t)
+       (procedures :type 'string
+		   :not-null t))))
+
+
+(defun main ()
+  (km-create-table migration-id sql))
