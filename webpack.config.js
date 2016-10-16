@@ -7,7 +7,6 @@ var APP_DIR = path.resolve(__dirname, 'static/js/app');
 var config = {
     entry: {
 	comments: APP_DIR + "/comments.jsx",
-	home: APP_DIR + "/home.jsx",
 	recipes: APP_DIR + "/recipes.jsx"
     },
 
