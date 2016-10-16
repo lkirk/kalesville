@@ -21,7 +21,7 @@ MIGRATIONS:=$(shell find $(WD)/migrations -type f -name '*.ros' | sort)
 
 run-migrations: APP_ENV?=development
 run-migrations:
-	@export app_env=$(app_env) ;\
+	@export APP_ENV=$(APP_ENV) ;\
 	for m in $(MIGRATIONS); do\
 		echo '### running' $$m ;\
 		$$m ;\
