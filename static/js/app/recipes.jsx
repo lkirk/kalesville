@@ -68,7 +68,7 @@ var RecipeForm = React.createClass({
 		  onChange={this.handleProceduresChange}
 		  />
 	      </div>
-	      <input type="submit" value="Post"/>
+	      <input type="submit" />
 	    </form>
 	);
     }
@@ -82,7 +82,7 @@ var RecipeFormDisplay = React.createClass({
 	request
 	    .post(this.props.postUrl)
 	    .send({
-		title: recipe.text,
+		title: recipe.title,
 		ingredients: recipe.ingredients,
 		procedures: recipe.procedures
 	    })
