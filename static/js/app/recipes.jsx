@@ -96,7 +96,6 @@ var RecipeFormDisplay = React.createClass({
     render: function() {
 	return (
 	        <div className="recipeFormDisplay">
-		<h1>Recipes</h1>
 		<RecipeForm onRecipeSubmit={this.handleRecipeSubmit} />
 		</div>
 	);
