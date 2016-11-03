@@ -1,6 +1,9 @@
 version: '2'
 services:
   nginx:
-    image: nginx:latest
+    build:
+      context: ./devops/nginx
+    image: kalesville/nginx:latest
     ports:
-      - "0.0.0.0:80:80"
+      - "80:80"
+      - "443:443"
