@@ -1,0 +1,18 @@
+version: '2'
+services:
+  web:
+    build:
+      context: ../../
+      dockerfile: ./devops/kalesville/Dockerfile
+    environment:
+      - APP_ENV=docker
+    external_links:
+      - kalesville-mysql:mysql
+    ports:
+      - "5000:5000"
+  # dev:
+  # test:
+  #   environment:
+  #     - APP_ENV=docker
+  #   external_links:
+  #     - kalesville-mysql:mysql

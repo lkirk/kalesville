@@ -1,0 +1,7 @@
+node_modules/
+devops/
+*.log
+*.sqlite
+webpack.config.js
+package.json
+Makefile
