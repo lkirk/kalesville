@@ -44,3 +44,23 @@ test:
 	fi
 	$(MAKE) -f $(SELF) run-migrations APP_ENV=test
 ### TESTS
+
+### MYSQL
+mysql-up: # $(MYSQL-DATA)
+	cd $(WD)/devops/mysql/ \
+		&& docker-compose up -d kalesville-mysql \
+		&& docker logs -f mysql_kalesville-mysql_1
+
+mysql-stop:
+	cd $(WD)/devops/mysql/ && docker-compose stop
+
+mysql-down:
+	cd $(WD)/devops/mysql/ && docker-compose down
+
+mysql-shell:
+	docker run -it --rm \
+		--link mysql_kalesville-mysql_1:mysql \
+		--net mysql_default \
+		mysql:5.7 \
+		mysql -umysql -pmysql -Dkalesville-web -hmysql
+### MYSQL

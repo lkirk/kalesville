@@ -16,11 +16,11 @@ exec ros -Q -- $0 "$@"
 
 (defvar sql
   (create-table :user_comments
-      ((id :type 'string
+      ((id :type '(char 36) ;; length of uuid4
 	   :primary-key t)
-       (author :type 'string
+       (author :type '(varchar 60)
 	       :not-null t)
-       (text :type 'string
+       (text :type 'text
 	     :not-null t))))
 
 

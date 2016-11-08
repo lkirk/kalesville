@@ -16,13 +16,13 @@ exec ros -Q -- $0 "$@"
 
 (defvar sql
   (create-table :recipes
-      ((id :type 'string
+      ((id :type '(char 36) ;; length of uuid4
 	   :primary-key t)
-       (title :type 'string
+       (title :type '(varchar 256)
 	      :not-null t)
-       (ingredients :type 'string
+       (ingredients :type 'text
 		    :not-null t)
-       (procedures :type 'string
+       (procedures :type 'text
 		   :not-null t))))
 
 
