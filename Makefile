@@ -4,7 +4,7 @@ WD:=$(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 SELF:=$(firstword $(MAKEFILE_LIST))
 SHELL:=/bin/bash -e -o pipefail
 
-### WEB
+### web
 web-dev: APP_ENV?=development
 web-dev: PORT?=5000
 web-dev:
@@ -14,10 +14,10 @@ web-dev:
 		--port $(PORT) \
 		$(WD)/app.lisp & \
 	npm run dev
-### WEB
+### web
 
-### MIGRATE
-MIGRATIONS:=$(shell find $(WD)/migrations -type f -name '*.ros' | sort)
+### migrate
+MIGRATIONS:=$(shell find $(WD)/scripts/migrations -type f -name '*.ros' | sort)
 
 run-migrations: APP_ENV?=development
 run-migrations:
@@ -26,26 +26,23 @@ run-migrations:
 		echo '### running' $$m ;\
 		$$m ;\
 	done
-### MIGRATE
+### migrate
 
-### BUILD
+### build
 build-node:
 	@$(error 'not implemented yet')
+### build
 
-build-docker:
-	@$(error 'not implemented yet')
-### BUILD
-
-### TESTS
+### tests
 test: TEST-DB?=$(WD)/test-db.sqlite
 test:
 	@if [ -e $(TEST-DB) ]; then\
 		(rm $(TEST-DB) && echo 'removed $(TEST-DB)') \
 	fi
 	$(MAKE) -f $(SELF) run-migrations APP_ENV=test
-### TESTS
+### tests
 
-### MYSQL
+### mysql
 mysql-up: # $(MYSQL-DATA)
 	cd $(WD)/devops/mysql/ \
 		&& docker-compose up -d kalesville-mysql \
@@ -63,4 +60,21 @@ mysql-shell:
 		--net mysql_default \
 		mysql:5.7 \
 		mysql -umysql -pmysql -Dkalesville-web -hmysql
-### MYSQL
+### mysql
+
+### docker compose
+COMPOSE-FILES:=$(shell echo '-f devops/'{mysql,kalesville}/docker-compose.yml)
+DOCKER-COMPOSE:=docker-compose $(COMPOSE-FILES)
+
+build-web:
+	$(DOCKER-COMPOSE) build web
+
+up:
+	$(DOCKER-COMPOSE) up -d
+
+down:
+	$(DOCKER-COMPOSE) down
+
+restart:
+	$(DOCKER-COMPOSE) restart
+### docker compose
