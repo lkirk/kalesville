@@ -13,6 +13,7 @@ RUN set -e; \
 	    ca-certificates \
 	    make \
 	    bzip2 \
+	    libmysqlclient-dev \
 
 	    # needed for roswell build
     	    autoconf \
