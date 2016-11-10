@@ -1,5 +1,7 @@
 node_modules/
 devops/
+\#*.\#
+*.swp
 *.log
 *.sqlite
 webpack.config.js
