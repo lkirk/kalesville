@@ -29,6 +29,18 @@
     '(:debug T
       :databases ((:maindb :sqlite3 :database-name #P"./dev-db.sqlite"))))
 
+(defconfig |docker|
+    '(:debug T
+      :databases ((:maindb
+		   :mysql
+		   :database-name "kalesville-web"
+		   :username "mysql"
+		   :password "mysql"
+		   :host "mysql"
+		   :port 3306
+		   ))))
+
+
 (defconfig |test| ;; for more low level tests, blank db
     '(:debug T
       :databases ((:maindb :sqlite3 :database-name #P"./test-db.sqlite"))))
@@ -41,6 +53,9 @@
 
 (defun developmentp ()
   (string= (appenv) "development"))
+
+(defun dockerp ()
+  (string= (appenv) "docker"))
 
 (defun productionp ()
   (string= (appenv) "production"))
