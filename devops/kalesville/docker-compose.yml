@@ -10,9 +10,36 @@ services:
       - kalesville-mysql:mysql
     ports:
       - "5000:5000"
-  # dev:
-  # test:
-  #   environment:
-  #     - APP_ENV=docker
-  #   external_links:
-  #     - kalesville-mysql:mysql
+    external_links:
+      - kalesville-mysql:mysql
+    depends_on:
+      - kalesville-mysql
+
+  web-dev:
+    build:
+      context: ../../
+      dockerfile: ./devops/kalesville/Dockerfile-dev
+    environment:
+      - APP_ENV=docker
+    external_links:
+      - kalesville-mysql:mysql
+    ports:
+      - "5000:5000"
+    external_links:
+      - kalesville-mysql:mysql
+    depends_on:
+      - kalesville-mysql-dev
+    volumes:
+      - ../../app.lisp:/opt/kalesville/app.lisp:ro
+      - ../../.babelrc:/opt/kalesville/.babelrc:ro
+      - ../../devops:/opt/kalesville/devops:ro
+      - ../../kalesville.asd:/opt/kalesville/kalesville.asd:ro
+      - ../../kalesville-test.asd:/opt/kalesville/kalesville-test.asd:ro
+      - ../../Makefile:/opt/kalesville/Makefile:ro
+      - ../../package.json:/opt/kalesville/package.json:ro
+      - ../../scripts:/opt/kalesville/scripts:ro
+      - ../../src:/opt/kalesville/src:ro
+      - ../../static:/opt/kalesville/static:ro
+      - ../../t:/opt/kalesville/t:ro
+      - ../../templates:/opt/kalesville/templates:ro
+      - ../../webpack.config.js:/opt/kalesville/webpack.config.js:ro
