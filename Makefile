@@ -65,12 +65,18 @@ mysql-shell:
 ### docker compose
 COMPOSE-FILES:=$(shell echo '-f devops/'{mysql,kalesville}/docker-compose.yml)
 DOCKER-COMPOSE:=docker-compose $(COMPOSE-FILES)
-
+OPTS:=
 build-web:
-	$(DOCKER-COMPOSE) build web
+	$(DOCKER-COMPOSE) build $(OPTS) web
+
+build-web-dev:
+	$(DOCKER-COMPOSE) build $(OPTS) web-dev
 
 up:
-	$(DOCKER-COMPOSE) up -d
+	$(DOCKER-COMPOSE) up -d $(OPTS) web
+
+up-dev:
+	$(DOCKER-COMPOSE) up -d $(OPTS) web-dev
 
 down:
 	$(DOCKER-COMPOSE) down
