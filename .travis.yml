@@ -1,0 +1,9 @@
+sudo: required
+
+language: common-lisp
+
+services:
+  - docker
+
+script:
+  make build-web
