@@ -4,6 +4,4 @@ devops/
 *.swp
 *.log
 *.sqlite
-webpack.config.js
-package.json
 Makefile
