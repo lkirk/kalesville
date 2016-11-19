@@ -50,7 +50,7 @@ RUN apt-get remove -y --purge \
 	    g++ \
 	    ;\
 
-    rm -r /opt/roswell /opt/node
+    rm -r /opt/roswell /opt/scripts
 
 WORKDIR /opt/kalesville
 # add in kalesville source code
