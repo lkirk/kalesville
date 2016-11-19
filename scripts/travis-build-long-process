@@ -2,23 +2,26 @@
 set -e
 set -o pipefail
 
+BUILD_START_TIME=$(date +%s)
 SCRIPT=$1
+RANDOM_STRING=$(cat /dev/urandom | tr -dc '[a-zA-Z0-9]' | fold -w 10 | head -1)
 
-export PING_SLEEP=30s
+export PING_SLEEP=1m
 export WORKDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export BUILD_OUTPUT=$WORKDIR/build.out
+export BUILD_OUTPUT=$WORKDIR/${RANDOM_STRING}_build.out
 
 touch $BUILD_OUTPUT
 
 dump_output() {
-   echo 'Tailing the last 500 lines of output:'
-   tail -500 $BUILD_OUTPUT
+    local output_length=300
+    echo "Tailing the last $output_length lines of output:"
+    tail -$output_length $BUILD_OUTPUT
 }
 
 error_handler() {
-  echo ERROR: An error was encountered with the build.
-  dump_output
-  exit 1
+    echo ERROR: An error was encountered with the build.
+    dump_output
+    exit 1
 }
 # If an error occurs, run our error handler to output a tail of the build
 trap 'error_handler' ERR
@@ -34,8 +37,10 @@ PING_LOOP_PID=$!
 $SCRIPT >> $BUILD_OUTPUT 2>&1
 
 # The build finished without returning an error so dump a tail of the output
-echo "[$(date)] INFO: Build Success!"
 dump_output
+echo "[$(date)] INFO: Build Success!"
+printf "[$(date)] INFO: took %s minutes\n" \
+       $(awk "{print ($(date +%s)-$BUILD_START_TIME) / 60}" <<< '')
 
 # nicely terminate the ping output loop
 kill $PING_LOOP_PID
