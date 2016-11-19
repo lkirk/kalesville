@@ -3,8 +3,7 @@ sudo: required
 services:
   - docker
 
-script:
-  -|
+script: |
   if [ "$TRAVIS_BRANCH" = "master" ]; then
     make build-web
   else
