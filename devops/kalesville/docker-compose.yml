@@ -19,7 +19,6 @@ services:
     build:
       context: ../../
       dockerfile: ./devops/kalesville/Dockerfile-dev
-      image: lloydkirk/kalesville:dev
     environment:
       - APP_ENV=docker
     external_links:
