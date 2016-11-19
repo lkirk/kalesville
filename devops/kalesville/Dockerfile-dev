@@ -53,7 +53,6 @@ RUN apt-get remove -y --purge \
     rm -r /opt/roswell /opt/scripts
 
 WORKDIR /opt/kalesville
-# add in kalesville source code
 ADD . .
 RUN chown -R user:user .
 
@@ -68,5 +67,4 @@ RUN ros setup; \
 # bootstrap kalesville node build
 RUN npm install
 
-# CMD ["/home/user/.roswell/bin/clackup","--server",":hunchentoot","--port","5000","app.lisp"]
 CMD ["./scripts/run-web-dev"]
