@@ -1,9 +1,12 @@
 sudo: required
 
-language: common-lisp
-
 services:
   - docker
 
 script:
-  make build-web
+  -|
+  if [ "$TRAVIS_BRANCH" = "master" ]; then
+    make build-web
+  else
+    make build-web-dev
+  fi  
