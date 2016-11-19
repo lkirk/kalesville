@@ -4,7 +4,8 @@ body='{
     "request":{
         "message": "Triggering the dev docker build via the api",
         "config": {
-	    "script": "make build-web-dev"
+	    "script": "make build-web-dev",
+	    "after_success": "docker push lloydkirk/kalesville:dev"
         }
     }
 }'
