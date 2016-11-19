@@ -4,8 +4,19 @@ services:
   - docker
 
 script: |
-  if [ "$TRAVIS_BRANCH" = "master" ]; then
+  if [ "$TRAVIS_BRANCH" = master ]; then
     make build-web
-  else
+  elif [ "$TRAVIS_BRANCH" = dev ]; then
     make build-web-dev
-  fi  
+  else
+    echo 'unable to parse branch' >&2 && exit 1
+  fi
+
+after_success: |
+  if [ "$TRAVIS_BRANCH" = master ]; then
+    echo 'will push to prd when ready'
+  elif [ "$TRAVIS_BRANCH" = dev ]; then
+    docker push 'lloydkirk/kalesville:dev'
+  else
+    echo 'unable to parse branch' >&2 && exit 1
+  fi
