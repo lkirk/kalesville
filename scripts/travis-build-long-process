@@ -2,7 +2,7 @@
 set -e
 set -o pipefail
 
-CMD="${1}"
+SCRIPT=$1
 
 export PING_SLEEP=30s
 export WORKDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -24,10 +24,14 @@ error_handler() {
 trap 'error_handler' ERR
 
 # Set up a repeating loop to send some output to Travis.
-bash -c "while true; do echo [\$(date)] INFO: running ${CMD} ...; sleep ${PING_SLEEP}; done" &
+bash -c "while true; \
+     	 do \
+     	       echo [\$(date)] INFO: running $SCRIPT ...; \
+	       sleep $PING_SLEEP; \
+	 done" &
 PING_LOOP_PID=$!
 
-"${CMD}" >> $BUILD_OUTPUT 2>&1
+$SCRIPT >> $BUILD_OUTPUT 2>&1
 
 # The build finished without returning an error so dump a tail of the output
 echo "[$(date)] INFO: Build Success!"

@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+set -o pipefail
+
+NODE_VERSION=v7.1.0
+NODE_URL=https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION.tar.gz
+
+#prepare
+mkdir -p /opt/
+cd /opt/
+
+#get
+curl $NODE_URL -o node-$NODE_VERSION.tar.gz
+tar -xzf node-$NODE_VERSION.tar.gz
+rm node-$NODE_VERSION.tar.gz
+
+#build
+cd node-$NODE_VERSION
+./configure
+make install

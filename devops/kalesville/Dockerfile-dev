@@ -33,17 +33,13 @@ RUN set -e; \
     && cd roswell \
     && sh bootstrap && ./configure && make && make install
 
+# add build scripts
+ADD ./scripts/ /opt/scripts/
 
-ADD ./scripts/travis-build-long-process /travis-build-long-process
+# build npm
+RUN /opt/scripts/travis-build-long-process /opt/scripts/build-node
 
-    # build npm
-RUN cd /opt \
-    && git clone -b v7.1.0 https://github.com/nodejs/node \
-    && cd node \
-    && /travis-build-long-process \
-       'cd /opt/node && ./configure && make install'
-
-    # clean after build
+# clean after build
 RUN apt-get remove -y --purge \
     	    autoconf \
     	    gcc \
