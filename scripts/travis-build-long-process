@@ -4,7 +4,8 @@ set -o pipefail
 
 BUILD_START_TIME=$(date +%s)
 SCRIPT=$1
-RANDOM_STRING=$(cat /dev/urandom | tr -dc '[a-zA-Z0-9]' | fold -w 10 | head -1)
+RANDOM_STRING=$(cat /dev/urandom \
+		    | tr -dc '[a-zA-Z0-9]' | fold -w 10 | head -1 || true)
 
 export PING_SLEEP=1m
 export WORKDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
