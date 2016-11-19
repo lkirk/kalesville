@@ -69,4 +69,4 @@ RUN ros setup; \
 RUN npm install
 
 # CMD ["/home/user/.roswell/bin/clackup","--server",":hunchentoot","--port","5000","app.lisp"]
-CMD ["./scripts/run-web-dev.bash"]
+CMD ["./scripts/run-web-dev"]
