@@ -70,7 +70,7 @@ build-web:
 	$(DOCKER-COMPOSE) build $(OPTS) web
 
 build-web-dev:
-	$(DOCKER-COMPOSE) build $(OPTS) --tag 'lloydkirk/kalesville:dev' web-dev
+	$(DOCKER-COMPOSE) build $(OPTS) web-dev
 
 up:
 	$(DOCKER-COMPOSE) up -d $(OPTS) web

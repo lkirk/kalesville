@@ -16,6 +16,7 @@ services:
       - kalesville-mysql
 
   web-dev:
+    image: lloydkirk/kalesville:dev
     build:
       context: ../../
       dockerfile: ./devops/kalesville/Dockerfile-dev
