@@ -40,7 +40,8 @@ ADD ./scripts/travis-build-long-process /travis-build-long-process
 RUN cd /opt \
     && git clone -b v7.1.0 https://github.com/nodejs/node \
     && cd node \
-    && /travis-build-long-process './configure && make install'
+    && /travis-build-long-process \
+       'cd /opt/node && ./configure && make install'
 
     # clean after build
 RUN apt-get remove -y --purge \
