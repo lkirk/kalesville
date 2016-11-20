@@ -62,7 +62,7 @@ USER user
 RUN ros setup; \
     ln -s /opt/kalesville/ ~/.roswell/local-projects/kalesville; \
     ros install clack; \
-    ./scripts/pkg-init.ros;
+    ./scripts/travis/pkg-init.ros;
 
 # bootstrap kalesville node build
 RUN npm install
