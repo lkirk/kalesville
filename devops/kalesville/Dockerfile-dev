@@ -37,7 +37,7 @@ RUN set -e; \
 ADD ./scripts/ /opt/scripts/
 
 # build npm
-RUN /opt/scripts/travis-build-long-process /opt/scripts/build-node
+RUN /opt/scripts/travis/travis-build-long-process /opt/scripts/travis/build-node
 
 # clean after build
 RUN apt-get remove -y --purge \
@@ -67,4 +67,4 @@ RUN ros setup; \
 # bootstrap kalesville node build
 RUN npm install
 
-CMD ["./scripts/run-web-dev"]
+CMD ["./scripts/entrypoints/run-web-dev"]
