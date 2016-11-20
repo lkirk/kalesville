@@ -28,7 +28,7 @@ error_handler() {
 trap 'error_handler' ERR
 
 # Set up a repeating loop to send some output to Travis.
-bash <<EOF
+bash <<EOF &
 while true
 do
     echo -n "[\$(date)] INFO: running $SCRIPT, "
@@ -36,20 +36,15 @@ do
     sleep $PING_SLEEP
 done
 EOF
-
-printf "[$(date)] INFO: took %s minutes\n" $(awk "{print ($(date +%s)-$BUILD_START_TIME) / 60}" <<< '')
-
-
-	 done &
 PING_LOOP_PID=$!
 
+# run script
 $SCRIPT >> $BUILD_OUTPUT 2>&1
+
+kill $PING_LOOP_PID
 
 # The build finished without returning an error so dump a tail of the output
 dump_output
 echo "[$(date)] INFO: Build Success!"
 printf "[$(date)] INFO: took %s minutes\n" \
        $(awk "{print ($(date +%s)-$BUILD_START_TIME) / 60}" <<< '')
-
-# nicely terminate the ping output loop
-kill $PING_LOOP_PID
