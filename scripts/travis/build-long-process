@@ -2,29 +2,29 @@
 set -e
 set -o pipefail
 
-BUILD_START_TIME=$(date +%s)
 SCRIPT=$1
+BUILD_START_TIME=$(date +%s)
 RANDOM_STRING=$(cat /dev/urandom \
 		    | tr -dc '[a-zA-Z0-9]' | fold -w 10 | head -1 || true)
-
-export PING_SLEEP=1m
-export WORKDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export BUILD_OUTPUT=$WORKDIR/${RANDOM_STRING}_build.out
+PING_SLEEP=1m
+WORKDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BUILD_OUTPUT=$WORKDIR/${RANDOM_STRING}_build.out
 
 touch $BUILD_OUTPUT
 
 dump_output() {
     local output_length=300
-    echo "Tailing the last $output_length lines of output:"
+    echo "Dumping the last $output_length lines of output:"
     tail -$output_length $BUILD_OUTPUT
 }
 
 error_handler() {
-    echo ERROR: An error was encountered with the build.
+    echo "[$(date)] ERROR: An error was encountered with the build."
     dump_output
     exit 1
 }
-# If an error occurs, run our error handler to output a tail of the build
+
+# If an error occurs, run error handler to output a tail of the build
 trap 'error_handler' ERR
 
 # Set up a repeating loop to send some output to Travis.
