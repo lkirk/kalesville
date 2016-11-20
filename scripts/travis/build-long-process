@@ -32,9 +32,7 @@ bash <<EOF
 while true
 do
     echo -n "[\$(date)] INFO: running $SCRIPT, "
-    printf '%s minutes elapsed\n' \
-    	   \$(awk -vcurr_time=\$(date +%s) -vbuild_start_time=$BUILD_START_TIME \
-	   	  '{print (curr_time-build_start_time) / 60}' <<< '')
+    printf '%s minutes elapsed\n' \$(awk -vcurr_time=\$(date +%s) -vbuild_start_time=$BUILD_START_TIME '{print (curr_time-build_start_time) / 60}' <<< '')
     sleep $PING_SLEEP
 done
 EOF
