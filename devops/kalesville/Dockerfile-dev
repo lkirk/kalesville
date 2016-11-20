@@ -34,10 +34,10 @@ RUN set -e; \
     && sh bootstrap && ./configure && make && make install
 
 # add build scripts
-ADD ./scripts/ /opt/scripts/
+ADD ./scripts/travis /opt/travis
 
 # build npm
-RUN /opt/scripts/travis/travis-build-long-process /opt/scripts/travis/build-node
+RUN /opt/travis/travis-build-long-process /opt/travis/build-node
 
 # clean after build
 RUN apt-get remove -y --purge \
@@ -50,7 +50,7 @@ RUN apt-get remove -y --purge \
 	    g++ \
 	    ;\
 
-    rm -r /opt/roswell /opt/scripts
+    rm -r /opt/roswell /opt/travis
 
 WORKDIR /opt/kalesville
 ADD . .

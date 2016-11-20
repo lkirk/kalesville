@@ -6,7 +6,7 @@ SCRIPT=$1
 BUILD_START_TIME=$(date +%s)
 RANDOM_STRING=$(cat /dev/urandom \
 		    | tr -dc '[a-zA-Z0-9]' | fold -w 10 | head -1 || true)
-PING_SLEEP=1m
+PING_SLEEP=5m # 10m is the limit for travis
 WORKDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_OUTPUT=$WORKDIR/${RANDOM_STRING}_build.out
 
@@ -14,7 +14,7 @@ touch $BUILD_OUTPUT
 
 dump_output() {
     local output_length=300
-    echo "Dumping the last $output_length lines of output:"
+    echo "[$(date)] INFO:Dumping the last $output_length lines of output:"
     tail -$output_length $BUILD_OUTPUT
 }
 
@@ -27,7 +27,7 @@ error_handler() {
 # If an error occurs, run error handler to output a tail of the build
 trap 'error_handler' ERR
 
-# Set up a repeating loop to send some output to Travis.
+# Set up a repeating loop to send some output to travis.
 bash -c "while true; \
      	 do \
      	       echo [\$(date)] INFO: running $SCRIPT ...; \
