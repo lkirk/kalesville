@@ -37,7 +37,7 @@ RUN set -e; \
 ADD ./scripts/travis /opt/travis
 
 # build npm
-RUN /opt/travis/travis-build-long-process /opt/travis/build-node
+RUN /opt/travis/build-long-process /opt/travis/build-node
 
 # clean after build
 RUN apt-get remove -y --purge \
