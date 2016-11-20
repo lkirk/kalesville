@@ -30,7 +30,8 @@ trap 'error_handler' ERR
 # Set up a repeating loop to send some output to travis.
 bash -c "while true; \
      	 do \
-     	       echo [\$(date)] INFO: running $SCRIPT ...; \
+	       printf "[$(date)] INFO: running $SCRIPT ... %s minutes elapsed\n" \
+	         $(awk "{print ($(date +%s)-$BUILD_START_TIME) / 60}" <<< ''); \
 	       sleep $PING_SLEEP; \
 	 done" &
 PING_LOOP_PID=$!
