@@ -4,18 +4,6 @@ WD:=$(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 SELF:=$(firstword $(MAKEFILE_LIST))
 SHELL:=/bin/bash -e -o pipefail
 
-### web
-web-dev: APP_ENV?=development
-web-dev: PORT?=5000
-web-dev:
-	@export APP_ENV=$(APP_ENV) ;\
-	trap 'kill %1; kill %2' SIGINT ;\
-	clackup --server :wookie \
-		--port $(PORT) \
-		$(WD)/app.lisp & \
-	npm run dev
-### web
-
 ### migrate
 MIGRATIONS:=$(shell find $(WD)/scripts/migrations -type f -name '*.ros' | sort)
 

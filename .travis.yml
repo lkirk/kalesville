@@ -6,18 +6,14 @@ services:
 script: |
   if [ "$TRAVIS_BRANCH" = master ]; then
     make build-web
-  elif [ "$TRAVIS_BRANCH" = dev ]; then
-    make build-web-dev
   else
-    echo 'unable to parse branch' >&2 && exit 1
+    make build-web-dev
   fi
 
 after_success: |
   docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
   if [ "$TRAVIS_BRANCH" = master ]; then
     echo 'will push to prd when ready'
-  elif [ "$TRAVIS_BRANCH" = dev ]; then
-    docker push 'lloydkirk/kalesville:dev'
   else
-    echo 'unable to parse branch' >&2 && exit 1
+    docker push 'lloydkirk/kalesville:dev'
   fi
