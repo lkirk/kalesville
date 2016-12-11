@@ -48,6 +48,14 @@ mysql-shell:
 		--net mysql_default \
 		mysql:5.7 \
 		mysql -umysql -pmysql -Dkalesville-web -hmysql
+
+mysql-shell-dev:
+	docker run -it --rm \
+		--link mysql_kalesville-mysql-dev_1:mysql \
+		--net mysql_default \
+		mysql:5.7 \
+		mysql -umysql -pmysql -Dkalesville-web -hmysql
+
 ### mysql
 
 ### docker compose
