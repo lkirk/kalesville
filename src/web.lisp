@@ -35,6 +35,10 @@
 (defun recipes ()
   (render #P"recipes.html"))
 
+@route GET "/recipe/:recipe-id"
+(defun recipe ()
+  (render #P"recipe.html"))
+
 @route GET "/about"
 (defun about ()
   (render #P"about.html"))
@@ -47,7 +51,7 @@
      (retrieve-all
       (yield
        (select :*
-	 (from :user_comments)))))))
+	       (from :user_comments)))))))
 
 @route GET "/api/recipes"
 (defun recipes-api ()
@@ -56,7 +60,18 @@
      (retrieve-all
       (yield
        (select :*
-	 (from :recipes)))))))
+	       (from :recipes)))))))
+
+@route GET "/api/recipe/:recipe-id"
+(defun recipe-api (&key recipe-id)
+  (render-json
+   (with-connection (db)
+     (retrieve-one
+      (select :*
+	      (from :recipes)
+	      (where (:= :id recipe-id))
+	      )
+      ))))
 
 @route POST "/api/post-comment"
 (defun insert-comment (&key (|author|) (|text|))
