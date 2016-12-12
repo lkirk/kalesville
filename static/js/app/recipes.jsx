@@ -96,14 +96,65 @@ var RecipeFormDisplay = React.createClass({
     render: function() {
 	return (
 	        <div className="recipeFormDisplay">
-		<RecipeForm onRecipeSubmit={this.handleRecipeSubmit} />
+		  <RecipeForm onRecipeSubmit={this.handleRecipeSubmit} />
 		</div>
 	);
     }
 
 });
 
-ReactDOM.render(
-    <RecipeFormDisplay postUrl='/api/post-recipe'/>,
-    document.getElementById('content')
+var RecipeSelector = React.createClass({
+
+    getInitialState: function() {
+	return {
+	    data: null
+	}
+    },
+
+    componentDidMount: function() {
+	request.get(this.props.recipeListUrl)
+	.end(
+	    function(err,res) {
+		if(err || !res.ok) {
+		    console.error(err.toString());
+		} else {
+		    this.setState({data: JSON.parse(res.text)});
+		}
+	    }.bind(this));
+    },
+
+    componentWillUnmount: function() {
+	this.serverRequest.abort();
+    },
+
+    render: function() {
+	if (this.state.data) {
+	    return (
+		<div className='recipeSelector'>
+		  <ul>
+		    {this.state.data.map(function(recipe) {
+			return (
+			    <li key={recipe.id}>
+			    <a href={["/recipe/" + recipe.id]}>{recipe.title}</a>
+			    </li>
+			)
+		    })}
+		  </ul>
+		</div>
+	    )
+	} else {
+	    return (
+		<div className='recipeSelector'></div>
+	    )
+	}
+    }
+});
+
+let components = (
+    <div>
+      <RecipeSelector recipeListUrl='/api/recipes' />
+      <RecipeFormDisplay postUrl='/api/post-recipe' />
+    </div>
 );
+
+ReactDOM.render(components, document.getElementById('content'));
