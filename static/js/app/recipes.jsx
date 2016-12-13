@@ -131,15 +131,14 @@ var RecipeSelector = React.createClass({
 	if (this.state.data) {
 	    return (
 		<div className='recipeSelector'>
-		  <ul>
+		  <button className='selectorButton'>Select a recipe to view</button>
+		  <div className='buttonDropdownContent'>
 		    {this.state.data.map(function(recipe) {
 			return (
-			    <li key={recipe.id}>
-			    <a href={["/recipe/" + recipe.id]}>{recipe.title}</a>
-			    </li>
+			    <a href={['/recipe/' + recipe.id]}>{recipe.title}</a>
 			)
 		    })}
-		  </ul>
+		  </div>
 		</div>
 	    )
 	} else {
