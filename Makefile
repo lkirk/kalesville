@@ -65,9 +65,6 @@ up:
 up-dev:
 	$(DOCKER-COMPOSE) up -d $(OPTS) nginx-dev
 
-stats:
-	$(DOCKER-COMPOSE) stats
-
 down:
 	$(DOCKER-COMPOSE) down
 
