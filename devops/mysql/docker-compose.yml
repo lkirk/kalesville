@@ -2,6 +2,7 @@ version: "2"
 services:
   kalesville-mysql:
     image: mysql:5.7
+    container_name: kalesville-mysql
     ports:
       - "3306:3306"
     volumes:
@@ -15,6 +16,7 @@ services:
 
   kalesville-mysql-dev:
     image: mysql:5.7
+    container_name: kalesville-mysql-dev
     ports:
       - "3306:3306"
     volumes:

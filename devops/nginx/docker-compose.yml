@@ -2,8 +2,29 @@ version: '2'
 services:
   nginx:
     build:
-      context: ./devops/nginx
-    image: kalesville/nginx:latest
+      context: ../../devops/nginx
+      dockerfile: ./Dockerfile
+    image: lloydkirk/kalesville-nginx:latest
+    container_name: nginx
     ports:
       - "80:80"
       - "443:443"
+    external_links:
+      - web:kalesville
+
+  nginx-dev:
+    build:
+      context: ../../devops/nginx
+      dockerfile: ./Dockerfile
+    image: lloydkirk/kalesville-nginx:dev
+    container_name: nginx-dev
+    ports:
+      - "80:80"
+      - "443:443"
+    external_links:
+      - web-dev:kalesville
+    depends_on:
+      - web-dev
+    volumes:
+      - ../../devops/nginx/kalesville.nginx.conf:/etc/nginx/conf.d/kalesville.nginx.conf:ro
+      - ../../devops/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
