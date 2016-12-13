@@ -30,18 +30,6 @@ test:
 	$(MAKE) -f $(SELF) run-migrations APP_ENV=test
 ### tests
 
-### mysql
-mysql-up: # $(MYSQL-DATA)
-	cd $(WD)/devops/mysql/ \
-		&& docker-compose up -d kalesville-mysql \
-		&& docker logs -f mysql_kalesville-mysql_1
-
-mysql-stop:
-	cd $(WD)/devops/mysql/ && docker-compose stop
-
-mysql-down:
-	cd $(WD)/devops/mysql/ && docker-compose down
-
 mysql-shell:
 	docker run -it --rm \
 		--link mysql_kalesville-mysql_1:mysql \
@@ -59,7 +47,7 @@ mysql-shell-dev:
 ### mysql
 
 ### docker compose
-COMPOSE-FILES:=$(shell echo '-f devops/'{mysql,kalesville}/docker-compose.yml)
+COMPOSE-FILES:=$(shell echo '-f devops/'{mysql,nginx,kalesville}/docker-compose.yml)
 DOCKER-COMPOSE:=docker-compose $(COMPOSE-FILES)
 OPTS:=
 build-web:
@@ -68,11 +56,17 @@ build-web:
 build-web-dev:
 	$(DOCKER-COMPOSE) build $(OPTS) web-dev
 
+build-nginx-dev:
+	$(DOCKER-COMPOSE) build $(OPTS) nginx-dev
+
 up:
 	$(DOCKER-COMPOSE) up -d $(OPTS) web
 
 up-dev:
-	$(DOCKER-COMPOSE) up -d $(OPTS) web-dev
+	$(DOCKER-COMPOSE) up -d $(OPTS) nginx-dev
+
+stats:
+	$(DOCKER-COMPOSE) stats
 
 down:
 	$(DOCKER-COMPOSE) down
