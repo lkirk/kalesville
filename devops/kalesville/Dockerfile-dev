@@ -59,7 +59,8 @@ RUN chown -R user:user .
 USER user
 
 # boostrap roswell clack quicklisp and kalesville libraries
-RUN ros setup; \
+RUN set -v; \
+    ros setup; \
     ln -s /opt/kalesville/ ~/.roswell/local-projects/kalesville; \
     ros install clack; \
     ./scripts/travis/pkg-init.ros;
