@@ -24,6 +24,11 @@ var config = {
 		loader : 'babel'
 	    },
 	]
+    },
+
+    // prevents `Module not found: Error: Cannot resolve module 'fs'`
+    node: {
+	fs: "empty"
     }
 };
 
