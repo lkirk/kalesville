@@ -55,7 +55,7 @@ RUN apt-get remove -y --purge \
 WORKDIR /opt/kalesville
 ADD . .
 RUN chown -R user:user . \
-    && ln -s .sbclrc $HOME
+    && mv .sbclrc /etc/sbclrc
 
 USER user
 
