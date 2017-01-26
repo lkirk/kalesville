@@ -60,6 +60,7 @@ USER user
 
 # boostrap roswell clack quicklisp and kalesville libraries
 RUN set -v; \
+    set -e; \
     ros setup; \
     ln -s /opt/kalesville/ ~/.roswell/local-projects/kalesville; \
     ros install clack; \
