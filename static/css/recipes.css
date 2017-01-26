@@ -1,38 +1,188 @@
-.selectorButton {
+#navcontainer
+{
+    /* background: #f0e7d7; */
+    /* width: 30%; */
+    width: 100%;
+    margin: 0 auto;
+    padding: 1em 0;
+    font-family: georgia, serif;
+    font-size: 13px;
+    text-align: center;
+    text-transform: lowercase;
+}
+
+ul#navlist
+{
+    text-align: left;
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    /* width: 70%; */
+    width: 100%;
+}
+
+ul#navlist li
+{
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+ul#navlist li a
+{
+    display: block;
+    width: 100%;
+    padding: 0.5em 0 0.5em 2em;
+    border-width: 1px;
+    /* border-color: #ffe #aaab9c #ccc #fff; */
+    border-style: solid;
+    color: #777;
+    text-decoration: none;
+    background: #f7f2ea;
+}
+
+#navcontainer>ul#navlist li a { width: auto; }
+
+ul#navlist li#active a
+{
+    background: #f0e7d7;
+    color: #1C3D07;
+}
+
+ul#navlist li a:hover, ul#navlist li#active a:hover
+{
+    color: #232B1E;
+    /* background: transparent; */
+    /* border-color: #aaab9c #fff #fff #ccc; */
+}
+
+/* Shared for all accordion types */
+.accordion {
+    font-family:Arial, Helvetica, sans-serif;
+    margin:0 auto;
+    font-size:14px;
+    border:1px solid #542437;
+    border-radius:10px;
+    width:auto;
+    padding:10px;
+    background:#fff;
+}
+
+.accordion ul {
+    list-style:none;
+    margin:0;
+    padding:0;
+}
+
+.accordion li {
+    margin:0;
+    padding:0;
+}
+
+.accordion [type=radio], .accordion [type=checkbox] {
+    display:none;
+}
+
+.accordion label {
+    display:block;
+    font-size:16px;
+    line-height:16px;
+    background:#4A6439;
+    border:1px solid #542437;
+    /* color:#542437; */
+    color:#FFF;
+    text-shadow:1px 1px 1px rgba(0,0,0,0.5)
+		    /* text-shadow:1px 1px 1px rgba(255,255,255,0.3); */
+		    font-weight:700;
+    cursor:pointer;
+    text-transform:uppercase;
+    -webkit-transition: all .2s ease-out;
+    -moz-transition: all .2s ease-out;
+}
+
+.accordion ul li label:hover, .accordion [type=radio]:checked ~ label, .accordion [type=checkbox]:checked ~ label {
+    background:#678554;
+    color:#FFF;
+    text-shadow:1px 1px 1px rgba(0,0,0,0.5)
+}
+
+.accordion .accordionContent {
+    padding:0 10px;
+    overflow:hidden;
+    border:1px solid #fff; /* Make the border match the background so it fades in nicely */
+    -webkit-transition: all .3s ease-out;
+    -moz-transition: all .3s ease-out;
+}
+
+.accordion h3 {
+    color:#542437;
+    padding:0;
+    margin:10px 0;
+}
+
+
+/* Vertical */
+.vertical ul li {
+    overflow:hidden;
+    margin:0 0 1px;
+}
+
+/* accordion button size */
+.vertical ul li label {
+    padding:10px;
+}
+
+.vertical [type=radio]:checked ~ label, .vertical [type=checkbox]:checked ~ label {
+    border-bottom:0;
+}
+
+.vertical ul li label:hover {
+    border:1px solid #542437; /* We don't want the border to disappear on hover */
+}
+
+.vertical ul li .accordionContent {
+    height:0px;
+    border-top:0;
+}
+
+.vertical [type=checkbox]:checked ~ label ~ .accordionContent {
+    border:1px solid #542437;
+}
+
+.vertical [type=checkbox]:checked ~ label ~ .accordionContent#accordian-recipe-form {
+    height:518px;
+    /* height:auto; */ /* ugh, there's a bug here, height must be pre-calculated */
+}
+
+textarea {
+    width: 100%;
+    height: 15em;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    resize: none;
+}
+
+input[type=button], input[type=submit], input[type=reset] {
     background-color: #4CAF50;
     color: white;
-    padding: 16px;
-    font-size: 16px;
-    border: none;
+    padding: 16px 32px;
+    text-decoration: none;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    margin: 4px 2px;
     cursor: pointer;
 }
 
-.recipeSelector {
-    position: relative;
-    display: inline-block;
-}
-
-.buttonDropdownContent {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-}
-
-.buttonDropdownContent a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-.buttonDropdownContent a:hover {background-color: #f1f1f1}
-
-.recipeSelector:hover .buttonDropdownContent {
-    display: block;
-}
-
-.recipeSelector:hover .selectorButton {
-    background-color: #3e8e41;
+input[type=text] {
+    width: 100%;
+    background-color: white;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    margin: 4px 0px 4px 0px;
 }
