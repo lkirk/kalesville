@@ -4,6 +4,23 @@ var Remarkable = require('remarkable');
 var request = require('superagent');
 
 
+function addCss(cssCode) {
+    var styleElement = document.createElement("style");
+    styleElement.type = "text/css";
+    if (styleElement.styleSheet) {
+	styleElement.styleSheet.cssText = cssCode;
+    } else {
+	styleElement.appendChild(document.createTextNode(cssCode));
+    }
+    document.getElementsByTagName("head")[0].appendChild(styleElement);
+}
+
+function dynamicallyAdjustAcordionHeight(selector, height, unit) {
+    addCss(
+	selector + '{' + 'height:' + height + unit + ';' + '}'
+    );
+}
+
 var RecipeForm = React.createClass({
     getInitialState: function() {
 	return {title:'', ingredients: '', procedures: ''};
@@ -111,16 +128,25 @@ var RecipeSelector = React.createClass({
 	}
     },
 
-    componentDidMount: function() {
+    getRecipeList: function() {
 	request.get(this.props.recipeListUrl)
 	.end(
 	    function(err,res) {
 		if(err || !res.ok) {
 		    console.error(err.toString());
 		} else {
-		    this.setState({data: JSON.parse(res.text)});
+		    this.setState({
+			data: JSON.parse(res.text).sort(
+			    function(a,b) { {/* sort by title name */}
+				return a.title.localeCompare(b.title)
+			    })
+		    });
 		}
 	    }.bind(this));
+    },
+
+    componentDidMount: function() {
+	this.getRecipeList()
     },
 
     componentWillUnmount: function() {
@@ -129,16 +155,18 @@ var RecipeSelector = React.createClass({
 
     render: function() {
 	if (this.state.data) {
+	    var height = String(this.state.data.length * 2 + 2.5);
+	    dynamicallyAdjustAcordionHeight(
+		'.vertical [type=checkbox]:checked ~ label ~ .accordionContent#accordian-recipe-list', height, 'em');
 	    return (
-		<div className='recipeSelector'>
-		  <button className='selectorButton'>Select a recipe to view</button>
-		  <div className='buttonDropdownContent'>
+		<div id="navcontainer">
+		  <ul id="navlist">
 		    {this.state.data.map(function(recipe) {
 			return (
-			    <a href={['/recipe/' + recipe.id]}>{recipe.title}</a>
+		            <li><a href={['/recipe/' + recipe.id]}>{recipe.title}</a></li>
 			)
 		    })}
-		  </div>
+		  </ul>
 		</div>
 	    )
 	} else {
@@ -151,8 +179,25 @@ var RecipeSelector = React.createClass({
 
 let components = (
     <div>
-      <RecipeSelector recipeListUrl='/api/recipes' />
-      <RecipeFormDisplay postUrl='/api/post-recipe' />
+      {/* <RecipeSelector recipeListUrl='/api/recipes' /> */}
+      <div className="accordion vertical">
+	<ul>
+	  <li>
+	    <input type="checkbox" id="checkbox-1" name="checkbox-accordion" />
+	    <label htmlFor="checkbox-1">Enter A Recipe</label>
+	    <div id="accordian-recipe-form" className="accordionContent">
+	      <RecipeFormDisplay postUrl='/api/post-recipe' />
+	    </div>
+	  </li>
+	  <li>
+            <input type="checkbox" id="checkbox-2" name="checkbox-accordion" />
+            <label htmlFor="checkbox-2">View A Recipe</label>
+            <div id="accordian-recipe-list" className="accordionContent">
+	      <RecipeSelector recipeListUrl='/api/recipes' />
+            </div>
+          </li>
+	</ul>
+      </div>
     </div>
 );
 
