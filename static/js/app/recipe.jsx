@@ -38,7 +38,7 @@ var Recipe  = React.createClass({
     },
 
     rawMarkup: function(stringData) {
-	var md = new Remarkable('commonmark');
+	var md = new Remarkable();
 
 	if (stringData) {
 	    var rawMarkup = md.render(stringData)
@@ -49,14 +49,13 @@ var Recipe  = React.createClass({
     },
 
     render: function() {
-	console.log()
 	return (
 	    <div>
-	    <h1>{this.state.data.title}</h1>
-	    <p>Ingredients</p>
-	    <div dangerouslySetInnerHTML={this.rawMarkup(this.state.data.ingredients)} />
-	    <p>Procedure</p>
-	    <div dangerouslySetInnerHTML={this.rawMarkup(this.state.data.procedures)} />
+	      <h1>{this.state.data.title}</h1>
+	      <p>Ingredients</p>
+	      <div dangerouslySetInnerHTML={this.rawMarkup(this.state.data.ingredients)} />
+	      <p>Procedure</p>
+	      <div dangerouslySetInnerHTML={this.rawMarkup(this.state.data.procedures)} />
 	    </div>
 	)
     }
