@@ -4,7 +4,7 @@
 exec ros -Q -- $0 "$@"
 |#
 (progn ;;init forms
-  (ql-dist:install-dist "http://beta.quicklisp.org/dist/quicklisp/2011-12-03/distinfo.txt" :replace t)
+  (ql-dist:install-dist "http://beta.quicklisp.org/dist/quicklisp/2011-12-03/distinfo.txt" :replace t :prompt nil)
   #+quicklisp (ql:quickload '(:kalesville)))
 
 (defpackage :ros.script.pkg-init.ros.3687591179
