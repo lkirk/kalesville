@@ -20,7 +20,7 @@ up:
 	$(DOCKER-COMPOSE) up -d $(OPTS) web
 
 up-dev:
-	$(DOCKER-COMPOSE) up -d $(OPTS) nginx-dev
+	$(DOCKER-COMPOSE) up -d $(OPTS) web-dev
 
 down:
 	$(DOCKER-COMPOSE) down
