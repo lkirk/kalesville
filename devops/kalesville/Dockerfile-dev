@@ -1,73 +1,13 @@
-FROM debian:8.6
+FROM node:7.5.0
 RUN set -e; \
-
     # setup user and space for code
     useradd -ms /bin/bash user; \
     mkdir /opt/kalesville; \ 
-    chown user:user /opt/kalesville; \
-
-    apt-get update; \
-    apt-get install -y \
-
-    	    # required for operation
-	    ca-certificates \
-	    make \
-	    bzip2 \
-	    libmysqlclient-dev \
-
-	    # needed for roswell build
-    	    autoconf \
-	    gcc \
-	    git \
-	    libcurl4-gnutls-dev \
-	    curl \
-
-	    # needed for npm build
-	    python \
-	    g++ \
-	    ; \
-
-    # build roswell
-    cd /opt \
-    && git clone -b release https://github.com/roswell/roswell.git \
-    && cd roswell \
-    && sh bootstrap && ./configure && make && make install
-
-# add build scripts
-ADD ./scripts/travis /opt/travis
-
-# build npm
-RUN /opt/travis/build-long-process /opt/travis/build-node
-
-# clean after build
-RUN apt-get remove -y --purge \
-    	    autoconf \
-    	    gcc \
-    	    git \
-    	    libcurl4-gnutls-dev \
-    	    curl \
-	    python \
-	    g++ \
-	    ;\
-
-    rm -r /opt/roswell /opt/travis
+    chown user:user /opt/kalesville
 
 WORKDIR /opt/kalesville
 ADD . .
-RUN chown -R user:user . \
-    && mv .sbclrc /etc/sbclrc
-
+RUN chown -R user:user /opt/kalesville
 USER user
-
-# boostrap roswell clack quicklisp and kalesville libraries
-RUN set -v; \
-    set -e; \
-    ros setup; \
-    ln -s /opt/kalesville/ ~/.roswell/local-projects/kalesville; \
-    ros install clack; \
-    ./scripts/travis/pkg-init.ros;
-
-# bootstrap kalesville node build
 RUN npm install
-
-CMD ["./scripts/entrypoints/run-web-dev"]
+CMD ["npm", "run", "dev"]
