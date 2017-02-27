@@ -20,11 +20,14 @@ up:
 	$(DOCKER-COMPOSE) up -d $(OPTS) web
 
 up-dev:
-	$(DOCKER-COMPOSE) up -d $(OPTS) web-dev
+	$(DOCKER-COMPOSE) up -d $(OPTS) nginx-dev
 
 down:
 	$(DOCKER-COMPOSE) down
 
 restart:
 	$(DOCKER-COMPOSE) restart
+
+logs:
+	$(DOCKER-COMPOSE) logs -f
 ### docker compose
