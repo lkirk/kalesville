@@ -10,4 +10,4 @@ ADD . .
 RUN chown -R user:user /opt/kalesville
 USER user
 RUN npm install
-CMD ["npm", "run", "dev"]
+CMD ./scripts/entrypoints/run-web-dev
