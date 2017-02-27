@@ -115,7 +115,7 @@ type App struct {
 func (a *App) Initialize() {
 	var err error
 	// a.DB, err = sql.Open("mysql", "mysql:mysql@tcp(172.18.0.2:3306)/kalesville-web")
-	a.DB, err = sql.Open("postgres", "postgres://mysql:mysql@172.18.0.2:5432/kalesville-web?sslmode=disable")
+	a.DB, err = sql.Open("postgres", "postgres://mysql:mysql@kalesville-pg:5432/kalesville-web?sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -137,7 +137,7 @@ func (a *App) initializeRouter() {
 		Route{"GetRecipe", "GET", "/recipe/{id}/", a.getRecipe},
 		Route{"PostRecipe", "POST", "/recipe/", a.postRecipe},
 	}
-	a.Router = mux.NewRouter().StrictSlash(true)
+	a.Router = mux.NewRouter().StrictSlash(true).PathPrefix("/api").Subrouter()
 	for _, route := range routes {
 		var handler http.Handler
 
