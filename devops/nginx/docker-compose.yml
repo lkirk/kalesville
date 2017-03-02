@@ -14,8 +14,8 @@ services:
 
   nginx-dev:
     build:
-      context: ../../devops/nginx
-      dockerfile: ./Dockerfile
+      context: ../../
+      dockerfile: ./devops/nginx/Dockerfile
     image: lloydkirk/kalesville-nginx:dev
     container_name: nginx-dev
     ports:
@@ -23,6 +23,10 @@ services:
       - "443:443"
     external_links:
       - web-dev:kalesville
+    depends_on:
+      - web-dev
     volumes:
-      - ../../devops/nginx/kalesville.nginx.conf:/etc/nginx/conf.d/kalesville.nginx.conf:ro
+      - ../../static/:/usr/share/nginx/static/:ro
+      # - ../../devops/nginx/kalesville.nginx.conf:/etc/nginx/conf.d/kalesville.nginx.conf:ro
+      - ../../devops/nginx/kalesville.nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ../../devops/nginx/nginx.conf:/etc/nginx/nginx.conf:ro

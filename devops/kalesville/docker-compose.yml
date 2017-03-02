@@ -19,8 +19,8 @@ services:
       dockerfile: ./devops/kalesville/Dockerfile-dev
     container_name: kalesville-web-dev
     external_links:
-      - kalesville-pg
-      - nginx:nginx
+      - kalesville-pg:kalesville-pg
     depends_on:
       - kalesville-pg
-      - nginx-dev
+    volumes:
+      - ../../app:/opt/kalesville/app

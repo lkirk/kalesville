@@ -3,6 +3,7 @@ services:
   kalesville-pg:
     image: postgres:9.6
     container_name: kalesville-pg
+    hostname: kalesville-pg
     ports:
       - "5432:5432"
     volumes:
