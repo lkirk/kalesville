@@ -91,16 +91,15 @@ func (a *App) postRecipe(w http.ResponseWriter, r *http.Request) {
 
 	err := decoder.Decode(&recipe)
 	if err != nil {
-		ErrorResponse(w, 500, "Invalid request body")
+		ErrorResponse(w, 500, err.Error())
 	}
 
 	err = recipe.createRecipe(a.DB)
 	if err != nil {
-		ErrorResponse(w, 500, "Invalid request body")
+		ErrorResponse(w, 500, err.Error())
 	} else {
 		JSONResponse(w, http.StatusOK, recipe)
 	}
-
 }
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
@@ -134,10 +133,10 @@ type Routes []Route
 func (a *App) initializeRouter() {
 	var routes = Routes{
 		Route{"Index", "GET", "/", IndexHandler},
-		Route{"GetRecipe", "GET", "/recipe/{id}/", a.getRecipe},
-		Route{"PostRecipe", "POST", "/recipe/", a.postRecipe},
+		Route{"GetRecipe", "GET", "/recipe/{id}", a.getRecipe},
+		Route{"PostRecipe", "POST", "/recipe", a.postRecipe},
 	}
-	a.Router = mux.NewRouter().StrictSlash(true).PathPrefix("/api").Subrouter()
+	a.Router = mux.NewRouter().PathPrefix("/api").Subrouter()
 	for _, route := range routes {
 		var handler http.Handler
 
