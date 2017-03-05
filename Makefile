@@ -3,6 +3,14 @@
 WD:=$(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 SHELL:=/bin/bash -eo pipefail
 
+migrate-dev:
+	for f in migrations/*.sql; do \
+		echo '### running' $$f ;\
+		docker exec -i -ePGUSER=mysql -ePGPASSWORD=mysql -ePGDATABASE=kalesville-web \
+		kalesville-pg-dev psql -v ON_ERROR_STOP=1 < $$f ;\
+		echo '### done' $$f ;\
+	done
+
 ### docker compose
 COMPOSE-FILES:=$(shell echo '-f devops/'{postgres,nginx,kalesville}/docker-compose.yml)
 DOCKER-COMPOSE:=docker-compose $(COMPOSE-FILES)
