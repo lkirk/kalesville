@@ -27,6 +27,7 @@ services:
       - web-dev
     volumes:
       - ../../static/:/usr/share/nginx/static/:ro
+      - ../../static/js/public/:/usr/share/nginx/static/js/public/:ro
       # - ../../devops/nginx/kalesville.nginx.conf:/etc/nginx/conf.d/kalesville.nginx.conf:ro
       - ../../devops/nginx/kalesville.nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ../../devops/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
