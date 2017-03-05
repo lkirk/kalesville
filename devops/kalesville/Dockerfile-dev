@@ -7,7 +7,7 @@ RUN set -e; \
 
 WORKDIR /opt/kalesville
 ADD . .
-RUN chown -R user:user /opt/kalesville
-USER user
+# RUN chown -R user:user /opt/kalesville
+# USER user
 RUN npm install
 CMD ./scripts/entrypoints/run-web-dev
