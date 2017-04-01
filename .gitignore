@@ -1,13 +1,9 @@
-*.fasl
-*.dx32fsl
-*.dx64fsl
-*.lx32fsl
-*.lx64fsl
-*.x86f
 *~
 .#*
 \#*\#
 node_modules/
 static/js/public/
-*.sqlite
-*.log
+app
+src/
+pkg/
+vendor/

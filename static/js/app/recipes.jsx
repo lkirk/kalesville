@@ -186,7 +186,7 @@ let components = (
 	    <input type="checkbox" id="checkbox-1" name="checkbox-accordion" />
 	    <label htmlFor="checkbox-1">Enter A Recipe</label>
 	    <div id="accordian-recipe-form" className="accordionContent">
-	      <RecipeFormDisplay postUrl='/api/post-recipe' />
+	      <RecipeFormDisplay postUrl='/api/recipe' />
 	    </div>
 	  </li>
 	  <li>

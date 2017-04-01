@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="/css/main.css">
-    <link rel="stylesheet" type="text/css" href="/css/recipes.css">
+    <title>Kalesville -- recipes</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/recipes.css">
   </head>
   <body style="background-color:#92A685;">
     <ul class="top-nav">
@@ -12,6 +12,10 @@
       <li class="nav-entry"><a href="/recipes">Recipes</a></li>
       <li class="nav-entry"><a href="/about">About</a></li>
     </ul>
-    {% block content %}{% endblock %}
+    <div id="Recipes" class="subpage">
+      <div id="content">
+	<script type="text/javascript" src="/js/public/recipes.entry.chunk.js"></script>
+      </div>
+    </div>
   </body>
 </html>

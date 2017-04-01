@@ -1,19 +1,16 @@
 version: '2'
 services:
-  web:
-    build:
-      context: ../../
-      dockerfile: ./devops/kalesville/Dockerfile
-    container_name: kalesville-web
-    environment:
-      - APP_ENV=docker
-    external_links:
-      - kalesville-mysql:mysql
-    external_links:
-      - kalesville-mysql:mysql
-    depends_on:
-      - kalesville-mysql
-      - nginx
+  # web:
+  #   build:
+  #     context: ../../
+  #     dockerfile: ./devops/kalesville/Dockerfile
+  #   container_name: kalesville-web
+  #   environment:
+  #     - APP_ENV=docker
+  #   external_links:
+  #     - kalesville-mysql:mysql
+  #   depends_on:
+  #     - nginx
 
   web-dev:
     image: lloydkirk/kalesville:dev
@@ -21,26 +18,11 @@ services:
       context: ../../
       dockerfile: ./devops/kalesville/Dockerfile-dev
     container_name: kalesville-web-dev
-    environment:
-      - APP_ENV=docker
     external_links:
-      - kalesville-mysql-dev:mysql
-      - nginx:nginx
+      - kalesville-pg-dev:kalesville-pg
     depends_on:
-      - kalesville-mysql-dev
-    mem_limit: 200M
+      - kalesville-pg-dev
     volumes:
-      - ../../app.lisp:/opt/kalesville/app.lisp:ro
-      - ../../.babelrc:/opt/kalesville/.babelrc:ro
-      - ../../devops:/opt/kalesville/devops:ro
-      - ../../kalesville.asd:/opt/kalesville/kalesville.asd:ro
-      - ../../kalesville-test.asd:/opt/kalesville/kalesville-test.asd:ro
-      - ../../Makefile:/opt/kalesville/Makefile:ro
-      - ../../package.json:/opt/kalesville/package.json:ro
-      - ../../scripts:/opt/kalesville/scripts:ro
-      - ../../src:/opt/kalesville/src:ro
+      - ../../app:/opt/kalesville/app:ro
+      - ../../static/js/public:/opt/kalesville/static/js/public/:rw
       - ../../static/js/app:/opt/kalesville/static/js/app:ro
-      - ../../static/css:/opt/kalesville/static/css:ro
-      - ../../t:/opt/kalesville/t:ro
-      - ../../templates:/opt/kalesville/templates:ro
-      - ../../webpack.config.js:/opt/kalesville/webpack.config.js:ro

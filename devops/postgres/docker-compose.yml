@@ -1,0 +1,14 @@
+version: "2"
+services:
+  kalesville-pg-dev:
+    image: postgres:9.6
+    container_name: kalesville-pg-dev
+    hostname: kalesville-pg
+    ports:
+      - "5432:5432"
+    volumes:
+      - /opt/kalesville/pg-dev:/var/lib/postgresql/data:rw
+    environment:
+      - POSTGRES_USER=mysql
+      - POSTGRES_PASSWORD=mysql
+      - POSTGRES_DB=kalesville-web
