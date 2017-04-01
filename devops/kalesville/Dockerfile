@@ -47,7 +47,7 @@ USER user
 RUN ros setup; \
     ln -s /opt/kalesville/ ~/.roswell/local-projects/kalesville; \
     ros install clack; \
-    ./scripts/pkg-init.ros
+    ./scripts/travis/pkg-init.ros
 
 # TODO: write entrypoint
 CMD ["/home/user/.roswell/bin/clackup","--server",":hunchentoot","--port","5000","app.lisp"]

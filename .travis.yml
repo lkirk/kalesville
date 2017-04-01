@@ -1,9 +1,19 @@
 sudo: required
 
-language: common-lisp
-
 services:
   - docker
 
-script:
-  make build-web
+script: |
+  if [ "$TRAVIS_BRANCH" = master ]; then
+    make build-web
+  else
+    make build-web-dev
+  fi
+
+after_success: |
+  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  if [ "$TRAVIS_BRANCH" = master ]; then
+    echo 'will push to prd when ready'
+  else
+    docker push 'lloydkirk/kalesville:dev'
+  fi

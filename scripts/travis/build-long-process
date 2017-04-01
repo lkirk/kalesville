@@ -1,0 +1,50 @@
+#!/bin/bash
+set -e
+set -o pipefail
+
+SCRIPT=$1
+BUILD_START_TIME=$(date +%s)
+RANDOM_STRING=$(cat /dev/urandom \
+		    | tr -dc '[a-zA-Z0-9]' | fold -w 10 | head -1 || true)
+PING_SLEEP=5m # 10m is the limit for Travis
+WORKDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BUILD_OUTPUT=$WORKDIR/${RANDOM_STRING}_build.out
+
+touch $BUILD_OUTPUT
+
+dump_output() {
+    local output_length=300
+    echo "[$(date)] INFO:Dumping the last $output_length lines of output:"
+    tail -$output_length $BUILD_OUTPUT
+}
+
+error_handler() {
+    echo "[$(date)] ERROR: An error was encountered with the build."
+    dump_output
+    exit 1
+}
+
+# If an error occurs, run error handler to output a tail of the build
+trap 'error_handler' ERR
+
+# Set up a repeating loop to send some output to Travis.
+bash <<EOF &
+while true
+do
+    echo -n "[\$(date)] INFO: running $SCRIPT, "
+    printf '%s minutes elapsed\n' \$(awk -vcurr_time=\$(date +%s) -vbuild_start_time=$BUILD_START_TIME '{print (curr_time-build_start_time) / 60}' <<< '')
+    sleep $PING_SLEEP
+done
+EOF
+PING_LOOP_PID=$!
+
+# run script
+$SCRIPT >> $BUILD_OUTPUT 2>&1
+
+kill $PING_LOOP_PID
+
+# The build finished without returning an error so dump a tail of the output
+dump_output
+echo "[$(date)] INFO: Build Success!"
+printf "[$(date)] INFO: took %s minutes\n" \
+       $(awk "{print ($(date +%s)-$BUILD_START_TIME) / 60}" <<< '')
