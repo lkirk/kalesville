@@ -14,9 +14,9 @@ import (
 )
 
 func ErrorResponse(w http.ResponseWriter, code int, message string) {
-	JSONResponse(w, code, map[string]interface{} {
+	JSONResponse(w, code, map[string]interface{}{
 		"response": nil,
-		"error": message,
+		"error":    message,
 	})
 }
 
@@ -62,12 +62,79 @@ func (r *Recipe) getRecipe(db *sql.DB) error {
 		r.ID).Scan(&r.ID, &r.Title, &r.Ingredients, &r.Procedures)
 }
 
+func getRecipes(db *sql.DB) (recipes []Recipe, err error) {
+	rows, err := db.Query(
+		`SELECT "id", "title", "ingredients", "procedures" FROM "recipes";`)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+	for rows.Next() {
+		recipe := Recipe{}
+		err := rows.Scan(
+			&recipe.ID,
+			&recipe.Title,
+			&recipe.Ingredients,
+			&recipe.Procedures)
+		recipes = append(recipes, recipe)
+		if err != nil {
+			return recipes, err
+		}
+	}
+	return
+}
+
 func (r *Recipe) createRecipe(db *sql.DB) error {
 	return db.QueryRow(
 		`INSERT INTO "recipes" ("id", "title", "ingredients", "procedures")
                  VALUES(DEFAULT, $1, $2, $3)
                  RETURNING "id", "title", "ingredients", "procedures";`,
 		r.Title, r.Ingredients, r.Procedures).Scan(&r.ID, &r.Title, &r.Ingredients, &r.Procedures)
+}
+
+// Comments ////////////////////////////////////////////////////////////////////
+
+type Comment struct {
+	ID     int    `json:"id"`
+	Author string `json:"author"`
+	Text   string `json:"text"`
+}
+
+func (c *Comment) getComment(db *sql.DB) error {
+	return db.QueryRow(
+		`SELECT "id", "author", "text"
+                 FROM "user_comments" WHERE id=$1;`,
+		c.ID).Scan(&c.ID, &c.Author, &c.Text)
+}
+
+func getComments(db *sql.DB) (comments []Comment, err error) {
+	comments = make([]Comment, 0)
+	rows, err := db.Query(
+		`SELECT "id", "author", "text" FROM "user_comments";`)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+	for rows.Next() {
+		comment := Comment{}
+		err := rows.Scan(
+			&comment.ID,
+			&comment.Author,
+			&comment.Text)
+		comments = append(comments, comment)
+		if err != nil {
+			return comments, err
+		}
+	}
+	return
+}
+
+func (c *Comment) createComment(db *sql.DB) error {
+	return db.QueryRow(
+		`INSERT INTO "user_comments" ("id", "author", "text")
+                 VALUES(DEFAULT, $1, $2)
+                 RETURNING "id", "author", "text";`,
+		c.Author, c.Text).Scan(&c.ID, &c.Author, &c.Text)
 }
 
 // App //////////////////////////////////////////////////////////////////////////
@@ -85,6 +152,15 @@ func (a *App) getRecipe(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (a *App) getRecipes(w http.ResponseWriter, r *http.Request) {
+	recipes, err := getRecipes(a.DB)
+	if err != nil {
+		ErrorResponse(w, 500, err.Error())
+	} else {
+		JSONResponse(w, http.StatusOK, recipes)
+	}
+}
+
 func (a *App) postRecipe(w http.ResponseWriter, r *http.Request) {
 	var recipe Recipe
 	decoder := json.NewDecoder(r.Body)
@@ -99,6 +175,45 @@ func (a *App) postRecipe(w http.ResponseWriter, r *http.Request) {
 		ErrorResponse(w, 500, err.Error())
 	} else {
 		JSONResponse(w, http.StatusOK, recipe)
+	}
+}
+
+func (a *App) getComment(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	// TODO: input validation
+	commentId, _ := strconv.Atoi(vars["id"])
+	comment := Comment{ID: commentId}
+	err := comment.getComment(a.DB)
+	if err != nil {
+		ErrorResponse(w, 500, err.Error())
+	} else {
+		JSONResponse(w, http.StatusOK, comment)
+	}
+}
+
+func (a *App) getComments(w http.ResponseWriter, r *http.Request) {
+	comments, err := getComments(a.DB)
+	if err != nil {
+		ErrorResponse(w, 500, err.Error())
+	} else {
+		JSONResponse(w, http.StatusOK, comments)
+	}
+}
+
+func (a *App) postComment(w http.ResponseWriter, r *http.Request) {
+	var comment Comment
+	decoder := json.NewDecoder(r.Body)
+
+	err := decoder.Decode(&comment)
+	if err != nil {
+		ErrorResponse(w, 500, err.Error())
+	}
+
+	err = comment.createComment(a.DB)
+	if err != nil {
+		ErrorResponse(w, 500, err.Error())
+	} else {
+		JSONResponse(w, http.StatusOK, comment)
 	}
 }
 
@@ -134,7 +249,11 @@ func (a *App) initializeRouter() {
 	var routes = Routes{
 		Route{"Index", "GET", "/", IndexHandler},
 		Route{"GetRecipe", "GET", "/recipe/{id}", a.getRecipe},
+		Route{"GetRecipes", "GET", "/recipes", a.getRecipes},
 		Route{"PostRecipe", "POST", "/recipe", a.postRecipe},
+		Route{"GetComment", "GET", "/comment/{id}", a.getComment},
+		Route{"GetComments", "GET", "/comments", a.getComments},
+		Route{"PostComment", "POST", "/comment", a.postComment},
 	}
 	a.Router = mux.NewRouter().PathPrefix("/api").Subrouter()
 	for _, route := range routes {
