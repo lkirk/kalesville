@@ -7,7 +7,8 @@ var APP_DIR = path.resolve(__dirname, 'static/js/app');
 var config = {
     entry: {
 	comments: APP_DIR + "/comments.jsx",
-	recipes: APP_DIR + "/recipes.jsx"
+	recipes: APP_DIR + "/recipes.jsx",
+	recipe: APP_DIR + "/recipe.jsx"
     },
 
     output: {
@@ -23,6 +24,11 @@ var config = {
 		loader : 'babel'
 	    },
 	]
+    },
+
+    // prevents `Module not found: Error: Cannot resolve module 'fs'`
+    node: {
+	fs: "empty"
     }
 };
 

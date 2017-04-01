@@ -5,28 +5,29 @@ body {
     margin: 0;
 }
 
-ul {
+ul.top-nav {
     list-style-type: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #ddff99;
+    background-color: #535F4B;
 }
 
-li {
+li.nav-entry {
     float: left;
 }
 
-li a, .dropbtn {
+li.nav-entry a, .dropbtn {
     display: inline-block;
-    color: #404040; /* 25% grey */
+    color: #F9F9F9;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
 }
 
-li a:hover, .dropdown:hover .dropbtn {
-    background-color: #4dff4d;
+li.nav-entry a:hover, .dropdown:hover .dropbtn {
+    color: #404040; /* 25% grey */
+    background-color: #80867D;
 }
 
 li.dropdown {
