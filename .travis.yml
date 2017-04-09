@@ -7,6 +7,13 @@ go:
 services:
   - docker
 
+install:
+  - go get github.com/Masterminds/glide
+  - go get github.com/jteeuwen/go-bindata
+
+before_script:
+  - git describe > VERSION
+
 script: |
   if [ "$TRAVIS_BRANCH" = master ]; then
     make build-web
