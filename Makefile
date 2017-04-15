@@ -42,3 +42,12 @@ restart:
 logs:
 	$(DOCKER-COMPOSE) logs -f
 ### docker compose
+
+release-patch:
+	set -e ;\
+	NEW_VERSION=$(./scripts/increment-version patch < VERSION) ;\
+	git checkout master ;\
+	git pull ;\
+	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
+	git tag -a -m'Increment patch version by Makefile' $$NEW_VERSION ;\
+	git push --tags
