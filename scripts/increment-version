@@ -7,6 +7,7 @@ ALLOWED_INCREMENTS = ('major', 'minor', 'patch')
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('increment', help='amount to increment version')
+arg_parser.add_argument('--dev', action='store_true', help='print current dev version')
 arg_parser.add_argument('--no-dev', action='store_true', help='disallow dev versions')
 args = arg_parser.parse_args()
 if args.increment not in ALLOWED_INCREMENTS:
@@ -18,9 +19,11 @@ if len(raw_version.strip()) == 0:
 elif len(raw_version.split('-')) > 1:
     if args.no_dev:
         raise Exception('dev versions are not allowed')
-    else:
+    elif args.dev:
         print(raw_version)
         sys.exit(0)
+    else:
+        raw_version = raw_version.split('-')[0]
 
 major, minor, patch = raw_version.split('.')
 version = dict(minor=int(minor), major=int(major), patch=int(patch))
