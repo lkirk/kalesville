@@ -9,7 +9,9 @@ VERSION=$(cat VERSION)
 echo "==== Version: $VERSION ===="
 
 if [ "$TRAVIS_BRANCH" = master ]; then
-    echo 'will push to prd when ready'
+    set -x
+    docker push "lloydkirk/kalesville:$VERSION"
+    docker push "lloydkirk/kalesville-nginx:$VERSION"
 else
     set -x
     docker push 'lloydkirk/kalesville:dev'
