@@ -18,10 +18,10 @@ install:
     && git clone https://github.com/creationix/nvm.git ~/.nvm
     && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`)
     && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
-  - npm install
 
 before_script:
   - git describe > VERSION
+  - touch ~/.kalesville-env-prd # TODO: hack for now
 
 script: |
   if [ "$TRAVIS_BRANCH" = master ]; then
