@@ -7,6 +7,7 @@ touch ~/.kalesville-env-prd
 
 if [ "$TRAVIS_BRANCH" = master ]; then
     npm install
+    CGO_ENABLED=0 go build
     make build-web build-nginx
 else
     make build-web-dev build-nginx-dev
