@@ -5,11 +5,9 @@ set -ex
 git describe > VERSION
 touch ~/.kalesville-env-prd
 
-pwd
-ls -la
-# if [ "$TRAVIS_BRANCH" = master ]; then
-#     npm install
-#     make build-web build-nginx
-# else
-#     make build-web-dev build-nginx-dev
-# fi
+if [ "$TRAVIS_BRANCH" = master ]; then
+    npm install
+    make build-web build-nginx
+else
+    make build-web-dev build-nginx-dev
+fi
