@@ -51,28 +51,14 @@ release-patch:
 	git pull ;\
 	git checkout master ;\
 	git pull ;\
-	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
-	git tag -a -m'Increment patch version by Makefile' \
-		$$(git describe | ./scripts/increment-version patch) ;\
-	git push --tags
-
-release-minor:
-	@git checkout dev ;\
-	git pull ;\
+	NEW_VERSION=$$(git describe | ./scripts/increment-version patch) ;\
+	git checkout dev ;\
+	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
+	git commit -m'Increment patch version of docker-compose.yml files by Makefile' devops/{kalesville,nginx}/docker-compose.yml ;\
+	git push ;\
 	git checkout master ;\
-	git pull ;\
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
-	git tag -a -m'Increment minor version by Makefile' \
-		$$(git describe | ./scripts/increment-version minor) ;\
-	git push --tags
-
-release-major:
-	@git checkout dev ;\
-	git pull ;\
-	git checkout master ;\
-	git pull ;\
-	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
-	git tag -a -m'Increment major version by Makefile' \
-		$$(git describe | ./scripts/increment-version major) ;\
-	git push --tags
+	git tag -a -m'Increment patch version by Makefile' ;\
+	git push --tags ;\
+	git checkout dev
 ### release
