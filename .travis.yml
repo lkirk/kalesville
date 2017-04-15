@@ -10,8 +10,11 @@ services:
 env:
   - TRAVIS_NODE_VERSION="7.9.0"
 
-install: install
+install:
+  - install
 
-script: build
+script:
+  - build
 
-after_success: push-docker
+after_success:
+  - push-docker
