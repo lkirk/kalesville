@@ -53,7 +53,7 @@ release-patch:
 	git pull ;\
 	NEW_VERSION=$$(git describe | ./scripts/increment-version patch) ;\
 	git checkout dev ;\
-	sed -ire"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
+	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
 	git commit -m'Increment patch version of docker-compose.yml files by Makefile' devops/{kalesville,nginx}/docker-compose.yml ;\
 	git push ;\
 	git checkout master ;\
