@@ -18,6 +18,9 @@ OPTS:=
 build-web:
 	$(DOCKER-COMPOSE) build $(OPTS) web
 
+build-nginx:
+	$(DOCKER-COMPOSE) build $(OPTS) nginx
+
 build-web-dev:
 	$(DOCKER-COMPOSE) build $(OPTS) web-dev
 
@@ -25,7 +28,7 @@ build-nginx-dev:
 	$(DOCKER-COMPOSE) build $(OPTS) nginx-dev
 
 up:
-	$(DOCKER-COMPOSE) up -d $(OPTS) web
+	$(DOCKER-COMPOSE) up -d $(OPTS) nginx
 
 up-dev:
 	$(DOCKER-COMPOSE) up -d $(OPTS) nginx-dev
