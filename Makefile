@@ -47,7 +47,9 @@ migrate-dev:
 
 ### release
 release-patch:
-	NEXT_VERSION=$$(git describe | ./scripts/increment-version patch) ;\
+	@NEXT_VERSION=$$(git describe | ./scripts/increment-version patch) ;\
+	git checkout dev ;\
+	git pull ;\
 	git checkout master ;\
 	git pull ;\
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
@@ -55,7 +57,9 @@ release-patch:
 	git push --tags
 
 release-minor:
-	NEXT_VERSION=$$(git describe | ./scripts/increment-version minor) ;\
+	@NEXT_VERSION=$$(git describe | ./scripts/increment-version minor) ;\
+	git checkout dev ;\
+	git pull ;\
 	git checkout master ;\
 	git pull ;\
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
@@ -63,7 +67,9 @@ release-minor:
 	git push --tags
 
 release-major:
-	NEXT_VERSION=$$(git describe | ./scripts/increment-version major) ;\
+	@NEXT_VERSION=$$(git describe | ./scripts/increment-version major) ;\
+	git checkout dev ;\
+	git pull ;\
 	git checkout master ;\
 	git pull ;\
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
