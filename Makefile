@@ -3,14 +3,6 @@
 WD:=$(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 SHELL:=/bin/bash -eo pipefail
 
-migrate-dev:
-	for f in migrations/*.sql; do \
-		echo '### running' $$f ;\
-		docker exec -i -ePGUSER=mysql -ePGPASSWORD=mysql -ePGDATABASE=kalesville-web \
-		kalesville-pg-dev psql -v ON_ERROR_STOP=1 < $$f ;\
-		echo '### done' $$f ;\
-	done
-
 ### docker compose
 COMPOSE-FILES:=$(shell echo '-f devops/'{postgres,nginx,kalesville}/docker-compose.yml)
 DOCKER-COMPOSE:=docker-compose $(COMPOSE-FILES)
@@ -43,11 +35,38 @@ logs:
 	$(DOCKER-COMPOSE) logs -f
 ### docker compose
 
+### db
+migrate-dev:
+	for f in migrations/*.sql; do \
+		echo '### running' $$f ;\
+		docker exec -i -ePGUSER=mysql -ePGPASSWORD=mysql -ePGDATABASE=kalesville-web \
+		kalesville-pg-dev psql -v ON_ERROR_STOP=1 < $$f ;\
+		echo '### done' $$f ;\
+	done
+### db
+
+### release
 release-patch:
-	set -e ;\
-	NEW_VERSION=$(./scripts/increment-version patch < VERSION) ;\
+	NEXT_VERSION=$$(git describe | ./scripts/increment-version patch) ;\
 	git checkout master ;\
 	git pull ;\
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
-	git tag -a -m'Increment patch version by Makefile' $$NEW_VERSION ;\
+	git tag -a -m'Increment patch version by Makefile' $$NEXT_VERSION ;\
 	git push --tags
+
+release-minor:
+	NEXT_VERSION=$$(git describe | ./scripts/increment-version minor) ;\
+	git checkout master ;\
+	git pull ;\
+	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
+	git tag -a -m'Increment minor version by Makefile' $$NEXT_VERSION ;\
+	git push --tags
+
+release-major:
+	NEXT_VERSION=$$(git describe | ./scripts/increment-version major) ;\
+	git checkout master ;\
+	git pull ;\
+	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
+	git tag -a -m'Increment major version by Makefile' $$NEXT_VERSION ;\
+	git push --tags
+### release
