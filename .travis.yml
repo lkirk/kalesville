@@ -1,6 +1,10 @@
 sudo: required
 language: go
 
+branches:
+  except:
+    - master
+
 go:
   - 1.8.1
 

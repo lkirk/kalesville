@@ -58,7 +58,39 @@ release-patch:
 	git push ;\
 	git checkout master ;\
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
-	git tag -a -m'Increment patch version by Makefile' ;\
+	git tag -a -m'Increment patch version by Makefile' $$NEW_VERSION ;\
+	git push --tags ;\
+	git checkout dev
+
+release-minor:
+	@git checkout dev ;\
+	git pull ;\
+	git checkout master ;\
+	git pull ;\
+	NEW_VERSION=$$(git describe | ./scripts/increment-version minor) ;\
+	git checkout dev ;\
+	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
+	git commit -m'Increment minor version of docker-compose.yml files by Makefile' devops/{kalesville,nginx}/docker-compose.yml ;\
+	git push ;\
+	git checkout master ;\
+	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
+	git tag -a -m'Increment minor version by Makefile' $$NEW_VERSION ;\
+	git push --tags ;\
+	git checkout dev
+
+release-major:
+	@git checkout dev ;\
+	git pull ;\
+	git checkout master ;\
+	git pull ;\
+	NEW_VERSION=$$(git describe | ./scripts/increment-version major) ;\
+	git checkout dev ;\
+	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
+	git commit -m'Increment major version of docker-compose.yml files by Makefile' devops/{kalesville,nginx}/docker-compose.yml ;\
+	git push ;\
+	git checkout master ;\
+	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
+	git tag -a -m'Increment major version by Makefile' $$NEW_VERSION ;\
 	git push --tags ;\
 	git checkout dev
 ### release
