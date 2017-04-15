@@ -5,7 +5,7 @@ set -e
 
 [ ! -e VERSION ] && echo 'VERSION file not found' >&2 && exit 1
 
-VERSION=$(<VERSION)
+VERSION=$(cat VERSION)
 echo "==== Version: $VERSION ===="
 
 if [ "$TRAVIS_BRANCH" = master ]; then
