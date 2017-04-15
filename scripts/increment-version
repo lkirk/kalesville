@@ -28,14 +28,11 @@ elif len(raw_version.split('-')) > 1:
 major, minor, patch = raw_version.split('.')
 version = dict(minor=int(minor), major=int(major), patch=int(patch))
 
+version[args.increment] += 1
 if args.increment == 'major':
-    version['major'] += 1
     version['minor'] = 0
     version['patch'] = 0
 elif args.increment == 'minor':
-    version['minor'] += 1
     version['patch'] = 0
-elif args.increment == 'patch':
-    version['patch'] += 1
 
 print('{major}.{minor}.{patch}'.format(**version))
