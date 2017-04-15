@@ -2,15 +2,17 @@ version: '2'
 services:
   nginx:
     build:
-      context: ../../devops/nginx
-      dockerfile: ./Dockerfile
-    image: lloydkirk/kalesville-nginx:latest
+      context: ../../
+      dockerfile: ./devops/nginx/Dockerfile
+    image: lloydkirk/kalesville-nginx:dev
     container_name: nginx
     ports:
       - "80:80"
       - "443:443"
     external_links:
       - web:kalesville
+    depends_on:
+      - web
 
   nginx-dev:
     build:

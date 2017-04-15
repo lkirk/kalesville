@@ -1,19 +1,17 @@
 sudo: required
+language: go
+
+go:
+  - 1.8.1
 
 services:
   - docker
 
-script: |
-  if [ "$TRAVIS_BRANCH" = master ]; then
-    make build-web
-  else
-    make build-web-dev
-  fi
+env:
+  - TRAVIS_NODE_VERSION=7.5.0
 
-after_success: |
-  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-  if [ "$TRAVIS_BRANCH" = master ]; then
-    echo 'will push to prd when ready'
-  else
-    docker push 'lloydkirk/kalesville:dev'
-  fi
+install: ./scripts/travis/install
+
+script: ./scripts/travis/build
+
+after_success: ./scripts/travis/push-docker

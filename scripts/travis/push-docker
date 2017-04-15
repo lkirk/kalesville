@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+[ ! -e VERSION ] && echo 'VERSION file not found' >&2 && exit 1
+
+VERSION=$(cat VERSION)
+echo "==== Version: $VERSION ===="
+
+if [ "$TRAVIS_BRANCH" = master ]; then
+    set -x
+    docker push "lloydkirk/kalesville:$VERSION"
+    docker push "lloydkirk/kalesville-nginx:$VERSION"
+else
+    set -x
+    docker push 'lloydkirk/kalesville:dev'
+fi

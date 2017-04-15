@@ -1,16 +1,15 @@
 version: '2'
 services:
-  # web:
-  #   build:
-  #     context: ../../
-  #     dockerfile: ./devops/kalesville/Dockerfile
-  #   container_name: kalesville-web
-  #   environment:
-  #     - APP_ENV=docker
-  #   external_links:
-  #     - kalesville-mysql:mysql
-  #   depends_on:
-  #     - nginx
+  web:
+    image: lloydkirk/kalesville:dev
+    build:
+      context: ../../
+      dockerfile: ./devops/kalesville/Dockerfile
+    container_name: kalesville-web
+    external_links:
+      - kalesville-pg:kalesville-pg
+    depends_on:
+      - kalesville-pg
 
   web-dev:
     image: lloydkirk/kalesville:dev
