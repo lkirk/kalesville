@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+# docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+[ ! -e VERSION ] && echo 'VERSION file not found' >&2 && exit 1
+
+VERSION=$(<VERSION)
+echo "==== Version: $VERSION ===="
+
+if [ "$TRAVIS_BRANCH" = master ]; then
+    echo 'will push to prd when ready'
+else
+    set -x
+    docker push 'lloydkirk/kalesville:dev'
+fi

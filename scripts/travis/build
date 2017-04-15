@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -ex
+
+git describe > VERSION
+touch ~/.kalesville-env-prd
+
+if [ "$TRAVIS_BRANCH" = master ]; then
+    npm install
+    make build-web build-nginx
+else
+    make build-web-dev build-nginx-dev
+fi
