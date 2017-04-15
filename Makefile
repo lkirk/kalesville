@@ -58,7 +58,7 @@ release-patch:
 	git push ;\
 	git checkout master ;\
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
-	git tag -a -m'Increment patch version by Makefile' ;\
+	git tag -a -m'Increment patch version by Makefile' $$NEW_VERSION ;\
 	git push --tags ;\
 	git checkout dev
 ### release
