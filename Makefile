@@ -47,7 +47,7 @@ migrate-dev:
 
 ### release
 release-patch:
-	git checkout dev ;\
+	@git checkout dev ;\
 	git pull ;\
 	git checkout master ;\
 	git pull ;\
@@ -57,7 +57,7 @@ release-patch:
 	git push --tags
 
 release-minor:
-	git checkout dev ;\
+	@git checkout dev ;\
 	git pull ;\
 	git checkout master ;\
 	git pull ;\
@@ -67,7 +67,7 @@ release-minor:
 	git push --tags
 
 release-major:
-	git checkout dev ;\
+	@git checkout dev ;\
 	git pull ;\
 	git checkout master ;\
 	git pull ;\

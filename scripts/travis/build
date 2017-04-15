@@ -8,6 +8,7 @@ touch ~/.kalesville-env-prd
 if $(egrep -q '[0-9]+\.[0-9]+\.[0-9]+' <<< "$TRAVIS_BRANCH"); then
     source ~/.nvm/nvm.sh
     npm install
+    glide install
     CGO_ENABLED=0 go build
     make build-web build-nginx
 else
