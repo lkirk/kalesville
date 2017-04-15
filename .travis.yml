@@ -22,6 +22,7 @@ install:
 before_script:
   - git describe > VERSION
   - scripts/increment-version patch < VERSION > NEXT_VERSION
+  - cat NEXT_VERSION
   - touch ~/.kalesville-env-prd # TODO: hack for now
 
 script: |
