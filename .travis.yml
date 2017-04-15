@@ -8,13 +8,10 @@ services:
   - docker
 
 env:
-  - TRAVIS_NODE_VERSION="7.9.0"
+  - TRAVIS_NODE_VERSION=7.9.0
 
-install:
-  - install-deps
+install: ./scripts/travis/install
 
-script:
-  - build
+script: ./scripts/travis/build
 
-after_success:
-  - push-docker
+after_success: ./scripts/travis/push-docker
