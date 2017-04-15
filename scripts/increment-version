@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+
+import argparse
+import sys
+
+ALLOWED_INCREMENTS = ('major', 'minor', 'patch')
+
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument('increment', help='amount to increment version')
+arg_parser.add_argument('--no-dev', action='store_true', help='disallow dev versions')
+args = arg_parser.parse_args()
+if args.increment not in ALLOWED_INCREMENTS:
+    arg_parser.error('increment must be one of {}'.format(ALLOWED_INCREMENTS))
+
+raw_version = sys.stdin.read().rstrip('\n')
+if len(raw_version.strip()) == 0:
+    raise Exception('please specify version on stdin')
+elif len(raw_version.split('-')) > 1:
+    if args.no_dev:
+        raise Exception('dev versions are not allowed')
+    else:
+        print(raw_version)
+        sys.exit(0)
+
+major, minor, patch = raw_version.split('.')
+version = dict(minor=int(minor), major=int(major), patch=int(patch))
+
+if args.increment == 'major':
+    version['major'] += 1
+    version['minor'] = 0
+    version['patch'] = 0
+elif args.increment == 'minor':
+    version['minor'] += 1
+    version['patch'] = 0
+elif args.increment == 'patch':
+    version['patch'] += 1
+
+print('{major}.{minor}.{patch}'.format(**version))
