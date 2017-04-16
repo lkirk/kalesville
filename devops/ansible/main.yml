@@ -1,0 +1,47 @@
+---
+- hosts: localhost
+  vars:
+    project_dir: /home/lkirk/test-ansible-copy
+    docker_compose: /home/lkirk/test-ansible-copy/docker-compose
+  remote_user: root
+  tasks:
+    - name: create location for docker-compose
+      file:
+        path: "{{ docker_compose | dirname }}"
+        state: directory
+        owner: lkirk
+        group: lkirk
+        mode: 0775
+        recurse: yes
+    - name: get docker-compose
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/1.11.2/docker-compose-{{ ansible_system }}-{{ ansible_machine }}"
+        dest: "{{ docker_compose }}"
+        mode: 0554
+        checksum: sha256:8d55adce12461c9f2abd907da1138b3e925919212611a54c94c4794ab0a975fc
+    - name: find compose files
+      find:
+        paths: "../"
+        patterns: "docker-compose.yml"
+        recurse: yes
+      register: docker_compose
+    - name: create location for compose files
+      file:
+        path: "{{ project_dir }}/{{ item | regex_replace('^../', '') | dirname }}"
+        state: directory
+        owner: lkirk
+        group: lkirk
+        mode: 0775
+        recurse: yes
+      with_items: "{{ docker_compose.files | map(attribute='path') | list }}"
+    # - debug:
+    #     msg: "{{ item | regex_replace('^../', '') }}"
+    #   with_items: "{{ docker_compose.files | map(attribute='path') | list }}"
+    - name: copy compose yaml files
+      copy:
+        src: "{{ item }}"
+        dest: "{{ project_dir }}/{{ item | regex_replace('^../', '') }}"
+        owner: lkirk
+        group: lkirk
+        mode: 0644
+      with_items: "{{ docker_compose.files | map(attribute='path') | list }}"
