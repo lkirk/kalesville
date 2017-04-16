@@ -54,7 +54,7 @@ release-patch:
 	NEW_VERSION=$$(git describe | ./scripts/increment-version patch) ;\
 	git checkout dev ;\
 	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
-	git commit -m'Increment patch version of docker-compose.yml files by Makefile' devops/{kalesville,nginx}/docker-compose.yml ;\
+	git commit -m'Increment patch version of docker-compose.yml files by Makefile [ci skip]' devops/{kalesville,nginx}/docker-compose.yml ;\
 	git push ;\
 	git checkout master ;\
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
@@ -70,7 +70,7 @@ release-minor:
 	NEW_VERSION=$$(git describe | ./scripts/increment-version minor) ;\
 	git checkout dev ;\
 	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
-	git commit -m'Increment minor version of docker-compose.yml files by Makefile' devops/{kalesville,nginx}/docker-compose.yml ;\
+	git commit -m'Increment minor version of docker-compose.yml files by Makefile [ci skip]' devops/{kalesville,nginx}/docker-compose.yml ;\
 	git push ;\
 	git checkout master ;\
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
@@ -86,7 +86,7 @@ release-major:
 	NEW_VERSION=$$(git describe | ./scripts/increment-version major) ;\
 	git checkout dev ;\
 	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
-	git commit -m'Increment major version of docker-compose.yml files by Makefile' devops/{kalesville,nginx}/docker-compose.yml ;\
+	git commit -m'Increment major version of docker-compose.yml files by Makefile [ci skip]' devops/{kalesville,nginx}/docker-compose.yml ;\
 	git push ;\
 	git checkout master ;\
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\

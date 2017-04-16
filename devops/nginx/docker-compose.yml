@@ -4,7 +4,7 @@ services:
     build:
       context: ../../
       dockerfile: ./devops/nginx/Dockerfile
-    image: lloydkirk/kalesville-nginx:0.0.7
+    image: lloydkirk/kalesville-nginx:0.0.8
     container_name: nginx
     ports:
       - "80:80"
