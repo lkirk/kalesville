@@ -1,7 +1,7 @@
 version: '2'
 services:
   web:
-    image: lloydkirk/kalesville:0.0.7
+    image: lloydkirk/kalesville:0.0.8
     build:
       context: ../../
       dockerfile: ./devops/kalesville/Dockerfile
