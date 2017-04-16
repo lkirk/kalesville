@@ -1,3 +1,3 @@
 FROM scratch
 COPY ./kalesville /kalesville
-CMD ["/kalesvile"]
+CMD ["/kalesville"]
