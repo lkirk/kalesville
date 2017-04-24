@@ -25,6 +25,9 @@ up:
 up-dev:
 	$(DOCKER-COMPOSE) up -d $(OPTS) nginx-dev
 
+pull:
+	$(DOCKER-COMPOSE) pull $(OPTS) web nginx kalesville-pg
+
 down:
 	$(DOCKER-COMPOSE) down
 
