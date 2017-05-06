@@ -1,0 +1,51 @@
+---
+- hosts: localhost
+  # vars:
+  #   project_dir: /home/lkirk/test-ansible-copy
+  #   docker_compose: /home/lkirk/test-ansible-copy/docker-compose
+  # remote_user: root
+  gather_facts: no
+  tasks:
+
+    - name: Run with inline v2 compose
+      docker_service:
+        project_name: kalesville
+        pull: yes
+        build: no
+        state: absent
+        definition:
+          version: '2'
+          services:
+            web:
+              image: lloydkirk/kalesville:0.0.8
+              container_name: kalesville-web
+              external_links:
+                - kalesville-pg:kalesville-pg
+              depends_on:
+                - kalesville-pg
+            kalesville-pg:
+              image: postgres:9.6
+              container_name: kalesville-pg
+              hostname: kalesville-pg
+              ports:
+                - "5432:5432"
+              volumes:
+                - /opt/kalesville/pg-prd:/var/lib/postgresql/data:rw
+              env_file:
+                - ~/.kalesville-env-prd
+              environment:
+                - POSTGRES_DB=kalesville-web
+            nginx:
+              image: lloydkirk/kalesville-nginx:0.0.8
+              container_name: nginx
+              ports:
+                - "80:80"
+                - "443:443"
+              external_links:
+                - web:kalesville
+              depends_on:
+                - web
+      register: output
+
+    - debug:
+        var: output
