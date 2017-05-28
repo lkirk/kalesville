@@ -2,6 +2,7 @@
 
 set -exo pipefail
 
+git fetch -t
 git describe > VERSION
 touch ~/.kalesville-env-prd
 
