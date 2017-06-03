@@ -5,14 +5,15 @@ set -exo pipefail
 git describe --always > VERSION
 touch ~/.kalesville-env-prd
 
+glide install
+CGO_ENABLED=0 go build
+
 if $(egrep -q '[0-9]+\.[0-9]+\.[0-9]+' <<< "$TRAVIS_BRANCH"); then
     set +x
     source ~/.nvm/nvm.sh
     set -x
     npm install
-    npm build
-    glide install
-    CGO_ENABLED=0 go build
+    npm run build
     make build-web build-nginx
 else
     make build-web-dev build-nginx-dev
