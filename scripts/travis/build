@@ -13,6 +13,8 @@ if $(egrep -q '[0-9]+\.[0-9]+\.[0-9]+' <<< "$TRAVIS_BRANCH"); then
     source ~/.nvm/nvm.sh
     set -x
     npm install
+
+    export NODE_ENV=production
     npm run build
     make build-web build-nginx
 else
