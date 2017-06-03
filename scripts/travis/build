@@ -13,6 +13,8 @@ npm build
 glide install
 CGO_ENABLED=0 go build
 
+find
+
 if $(egrep -q '[0-9]+\.[0-9]+\.[0-9]+' <<< "$TRAVIS_BRANCH"); then
     make build-web build-nginx
 else
