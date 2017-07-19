@@ -3,7 +3,7 @@
 \#*\#
 node_modules/
 static/js/public/
-app
+kalesville
 src/
 pkg/
 vendor/
