@@ -11,7 +11,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./app:/opt/kalesville/app:ro
+      - ./kalesville:/opt/kalesville/kalesville:ro
       - ./static/js/public:/opt/kalesville/static/js/public/:rw
       - ./static/js/app:/opt/kalesville/static/js/app:ro
 

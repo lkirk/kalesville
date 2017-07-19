@@ -1,4 +1,4 @@
 #!/bin/bash
 trap 'kill %1; kill %2' SIGINT
-./app &
+./kalesville &
 npm run dev
