@@ -1,0 +1,39 @@
+version: '2'
+services:
+  web:
+    image: lloydkirk/kalesville:0.0.8
+    build:
+      context: ./
+      dockerfile: ./docker/kalesville/Dockerfile
+    container_name: kalesville-web
+    external_links:
+      - db:kalesville-pg
+    depends_on:
+      - db
+
+  nginx:
+    build:
+      context: ./
+      dockerfile: ./docker/nginx/Dockerfile
+    image: lloydkirk/kalesville-nginx:0.0.8
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    external_links:
+      - web:kalesville
+    depends_on:
+      - web
+
+  db:
+    image: postgres:9.6
+    container_name: db
+    hostname: db
+    ports:
+      - "5432:5432"
+    volumes:
+      - /opt/kalesville/pg-prd:/var/lib/postgresql/data:rw
+    env_file:
+      - /home/lkirk/.kalesville-env-prd
+    environment:
+      - POSTGRES_DB=kalesville-web
