@@ -15,10 +15,10 @@ services:
       - ../../../static/js/app:/opt/kalesville/static/js/app:ro
 
   nginx:
+    image: lloydkirk/kalesville-nginx:dev
     build:
       context: ../../../
       dockerfile: ./docker/nginx/Dockerfile
-    image: lloydkirk/kalesville-nginx:dev
     ports:
       - "80:80"
       - "443:443"
@@ -34,7 +34,10 @@ services:
       - ../../../docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
 
   db:
-    image: postgres:9.6
+    image: lloydkirk/kalesville-postgres:dev
+    build:
+      context: ../../../
+      dockerfile: ./docker/postgres/Dockerfile
     hostname: kalesville-pg
     ports:
       - "5432:5432"
