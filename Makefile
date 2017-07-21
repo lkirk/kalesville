@@ -4,46 +4,33 @@ WD:=$(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 SHELL:=/bin/bash -eo pipefail
 
 ### docker compose
-COMPOSE-FILES:=$(shell echo '-f devops/'{postgres,nginx,kalesville}/docker-compose.yml)
-DOCKER-COMPOSE:=docker-compose $(COMPOSE-FILES)
-OPTS:=
-build-web:
-	$(DOCKER-COMPOSE) build $(OPTS) web
-
-build-nginx:
-	$(DOCKER-COMPOSE) build $(OPTS) nginx
-
-build-web-dev:
-	$(DOCKER-COMPOSE) build $(OPTS) web-dev
-
-build-nginx-dev:
-	$(DOCKER-COMPOSE) build $(OPTS) nginx-dev
+DOCKER-COMPOSE:=docker-compose -f $(WD)/docker/compose/dev/docker-compose.yml
+O:=
+S:=
+build:
+	$(DOCKER-COMPOSE) build $(O) $(S)
 
 up:
-	$(DOCKER-COMPOSE) up -d $(OPTS) nginx
-
-up-dev:
-	$(DOCKER-COMPOSE) up -d $(OPTS) nginx-dev
+	$(DOCKER-COMPOSE) up -d $(O) $(S)
 
 pull:
-	$(DOCKER-COMPOSE) pull $(OPTS) web nginx kalesville-pg
+	$(DOCKER-COMPOSE) pull $(O) $(S)
 
 down:
-	$(DOCKER-COMPOSE) down
+	$(DOCKER-COMPOSE) down $(O) $(S)
 
 restart:
-	$(DOCKER-COMPOSE) restart
+	$(DOCKER-COMPOSE) restart $(O) $(S)
 
 logs:
-	$(DOCKER-COMPOSE) logs -f
+	$(DOCKER-COMPOSE) logs $(O) $(S)
 ### docker compose
 
 ### db
-migrate-dev:
-	for f in migrations/*.sql; do \
+migrate:
+	@for f in migrations/*.sql; do \
 		echo '### running' $$f ;\
-		docker exec -i -ePGUSER=mysql -ePGPASSWORD=mysql -ePGDATABASE=kalesville-web \
-		kalesville-pg-dev psql -v ON_ERROR_STOP=1 < $$f ;\
+		$(DOCKER-COMPOSE) exec db psql -U postgres -d kalesville-web -f $$f ;\
 		echo '### done' $$f ;\
 	done
 ### db
