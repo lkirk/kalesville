@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -29,21 +28,6 @@ func JSONResponse(w http.ResponseWriter, code int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
-}
-
-func HTTPLogger(inner http.Handler, name string) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-
-		inner.ServeHTTP(w, r)
-
-		log.Printf("%s\t%s\t%s\t%s", r.Method, r.RequestURI, name, time.Since(start))
-	})
-}
-
-func ServerStartMsg() {
-	startMessage := fmt.Sprintf("Starting Kalesville at Port %v", 8000)
-	log.Printf(startMessage)
 }
 
 // Recipe ///////////////////////////////////////////////////////////////////////
@@ -226,57 +210,39 @@ type App struct {
 	DB     *sql.DB
 }
 
-func (a *App) Initialize() {
+func (a *App) initializeDB() {
 	var err error
-	// a.DB, err = sql.Open("mysql", "mysql:mysql@tcp(172.18.0.2:3306)/kalesville-web")
-	a.DB, err = sql.Open("postgres", "postgres://mysql:mysql@kalesville-pg:5432/kalesville-web?sslmode=disable")
+	a.DB, err = sql.Open("postgres",
+		"postgres://postgres:postgres@172.19.0.2:5432/kalesville-web?sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
-	a.initializeRouter()
 }
-
-type Route struct {
-	Name        string
-	Method      string
-	Pattern     string
-	HandlerFunc http.HandlerFunc
-}
-
-type Routes []Route
 
 func (a *App) initializeRouter() {
-	var routes = Routes{
-		Route{"Index", "GET", "/", IndexHandler},
-		Route{"GetRecipe", "GET", "/recipe/{id}", a.getRecipe},
-		Route{"GetRecipes", "GET", "/recipes", a.getRecipes},
-		Route{"PostRecipe", "POST", "/recipe", a.postRecipe},
-		Route{"GetComment", "GET", "/comment/{id}", a.getComment},
-		Route{"GetComments", "GET", "/comments", a.getComments},
-		Route{"PostComment", "POST", "/comment", a.postComment},
-	}
 	a.Router = mux.NewRouter().PathPrefix("/api").Subrouter()
-	for _, route := range routes {
-		var handler http.Handler
 
-		handler = route.HandlerFunc
-		handler = HTTPLogger(handler, route.Name)
-
-		a.Router.
-			Methods(route.Method).
-			Path(route.Pattern).
-			Name(route.Name).
-			Handler(handler)
-	}
+	a.Router.HandleFunc("/", IndexHandler).Name("Index").Methods("GET")
+	a.Router.HandleFunc("/recipe/{id}", a.getRecipe).Name("GetRecipe").Methods("GET")
+	a.Router.HandleFunc("/recipes", a.getRecipes).Name("GetRecipes").Methods("GET")
+	a.Router.HandleFunc("/recipe", a.postRecipe).Name("PostRecipe").Methods("POST")
+	a.Router.HandleFunc("/comment/{id}", a.getComment).Name("GetComment").Methods("GET")
+	a.Router.HandleFunc("/comments", a.getComments).Name("GetComments").Methods("GET")
+	a.Router.HandleFunc("/comment", a.postComment).Name("PostComment").Methods("POST")
 }
 
-func (a *App) Run(addr string) {
-	ServerStartMsg()
+func (a *App) runServer(addr string) {
+	log.Printf(fmt.Sprintf("Starting Kalesville at %v", addr))
 	log.Fatal(http.ListenAndServe(addr, a.Router))
 }
 
+var a App
+
+func init() {
+	a.initializeRouter()
+	a.initializeDB()
+}
+
 func main() {
-	a := App{}
-	a.Initialize()
-	a.Run(":8000")
+	a.runServer(":8000")
 }
