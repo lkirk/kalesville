@@ -20,10 +20,11 @@ func ErrorResponse(w http.ResponseWriter, code int, message string) {
 }
 
 func JSONResponse(w http.ResponseWriter, code int, payload interface{}) {
-	response, _ := json.Marshal(payload)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	response, err := json.Marshal(payload)
+	if err != nil {
+		errorMsg := fmt.Sprintf("Error marshalling json: %v", err.Error())
+		ErrorResponse(w, http.StatusInternalServerError, errorMsg)
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
@@ -47,6 +48,7 @@ func (r *Recipe) getRecipe(db *sql.DB) error {
 }
 
 func getRecipes(db *sql.DB) (recipes []Recipe, err error) {
+	recipes = make([]Recipe, 0)
 	rows, err := db.Query(
 		`SELECT "id", "title", "ingredients", "procedures" FROM "recipes";`)
 	if err != nil {
@@ -129,8 +131,9 @@ func (a *App) getRecipe(w http.ResponseWriter, r *http.Request) {
 	recipeId, _ := strconv.Atoi(vars["id"])
 	recipe := Recipe{ID: recipeId}
 	err := recipe.getRecipe(a.DB)
+
 	if err != nil {
-		ErrorResponse(w, 500, err.Error())
+		ErrorResponse(w, http.StatusInternalServerError, err.Error())
 	} else {
 		JSONResponse(w, http.StatusOK, recipe)
 	}
@@ -139,7 +142,7 @@ func (a *App) getRecipe(w http.ResponseWriter, r *http.Request) {
 func (a *App) getRecipes(w http.ResponseWriter, r *http.Request) {
 	recipes, err := getRecipes(a.DB)
 	if err != nil {
-		ErrorResponse(w, 500, err.Error())
+		ErrorResponse(w, http.StatusInternalServerError, err.Error())
 	} else {
 		JSONResponse(w, http.StatusOK, recipes)
 	}
@@ -151,12 +154,12 @@ func (a *App) postRecipe(w http.ResponseWriter, r *http.Request) {
 
 	err := decoder.Decode(&recipe)
 	if err != nil {
-		ErrorResponse(w, 500, err.Error())
+		ErrorResponse(w, http.StatusInternalServerError, err.Error())
 	}
 
 	err = recipe.createRecipe(a.DB)
 	if err != nil {
-		ErrorResponse(w, 500, err.Error())
+		ErrorResponse(w, http.StatusInternalServerError, err.Error())
 	} else {
 		JSONResponse(w, http.StatusOK, recipe)
 	}
@@ -169,7 +172,7 @@ func (a *App) getComment(w http.ResponseWriter, r *http.Request) {
 	comment := Comment{ID: commentId}
 	err := comment.getComment(a.DB)
 	if err != nil {
-		ErrorResponse(w, 500, err.Error())
+		ErrorResponse(w, http.StatusInternalServerError, err.Error())
 	} else {
 		JSONResponse(w, http.StatusOK, comment)
 	}
@@ -178,7 +181,7 @@ func (a *App) getComment(w http.ResponseWriter, r *http.Request) {
 func (a *App) getComments(w http.ResponseWriter, r *http.Request) {
 	comments, err := getComments(a.DB)
 	if err != nil {
-		ErrorResponse(w, 500, err.Error())
+		ErrorResponse(w, http.StatusInternalServerError, err.Error())
 	} else {
 		JSONResponse(w, http.StatusOK, comments)
 	}
@@ -190,12 +193,12 @@ func (a *App) postComment(w http.ResponseWriter, r *http.Request) {
 
 	err := decoder.Decode(&comment)
 	if err != nil {
-		ErrorResponse(w, 500, err.Error())
+		ErrorResponse(w, http.StatusInternalServerError, err.Error())
 	}
 
 	err = comment.createComment(a.DB)
 	if err != nil {
-		ErrorResponse(w, 500, err.Error())
+		ErrorResponse(w, http.StatusInternalServerError, err.Error())
 	} else {
 		JSONResponse(w, http.StatusOK, comment)
 	}
