@@ -1,5 +1,4 @@
 ### -=<(Kalesville)>=-
-
 WD:=$(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 SHELL:=/bin/bash -eo pipefail
 
@@ -27,6 +26,9 @@ logs:
 ### docker compose
 
 ### db
+wait:
+	sleep 5
+
 migrate:
 	@for f in migrations/*.sql; do \
 		echo '### running' $$f ;\
