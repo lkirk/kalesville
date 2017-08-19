@@ -63,10 +63,10 @@ const RecipeForm = React.createClass({
 	    <form className="recipeForm" onSubmit={this.handleSubmit}>
 	      <div>
 		<input
-	          type="text"
-	          placeholder="Recipe Title"
-	          value={this.state.title}
-	          onChange={this.handleTitleChange}
+		  type="text"
+		  placeholder="Recipe Title"
+		  value={this.state.title}
+		  onChange={this.handleTitleChange}
 		  />
 	      </div>
 	      <div>
@@ -97,24 +97,24 @@ const RecipeFormDisplay = React.createClass({
 
     handleRecipeSubmit({title, ingredients, procedures}) {
 	request
-	    .post(this.props.postUrl)
-	    .send({
-		title,
-		ingredients,
-		procedures
-	    })
-	    .end(function(err, {ok}) {
-		if (err || !ok) {
-		    console.error(this.props.url, err.toString());
-		}
-	    });
+	.post(this.props.postUrl)
+	.send({
+	    title,
+	    ingredients,
+	    procedures
+	})
+	.end(function(err, {ok}) {
+	    if (err || !ok) {
+		console.error(this.props.url, err.toString());
+	    }
+	});
     },
 
     render() {
 	return (
-	        <div className="recipeFormDisplay">
-		  <RecipeForm onRecipeSubmit={this.handleRecipeSubmit} />
-		</div>
+	    <div className="recipeFormDisplay">
+	      <RecipeForm onRecipeSubmit={this.handleRecipeSubmit} />
+	    </div>
 	);
     }
 
@@ -159,12 +159,12 @@ const RecipeSelector = React.createClass({
 	    dynamicallyAdjustAcordionHeight(
 		'.vertical [type=checkbox]:checked ~ label ~ .accordionContent#accordian-recipe-list', height, 'em');
 	    return (
-            <div id="navcontainer">
-              <ul id="navlist">
-                {this.state.data.map(({id, title}) => <li><a href={[`/recipe/${id}`]}>{title}</a></li>)}
-              </ul>
-            </div>
-        );
+		<div id="navcontainer">
+		  <ul id="navlist">
+                    {this.state.data.map(({id, title}) => <li><a href={[`/recipe/${id}`]}>{title}</a></li>)}
+		  </ul>
+		</div>
+            );
 	} else {
 	    return (
 		<div className='recipeSelector'></div>
@@ -187,12 +187,12 @@ let components = (
 	    </div>
 	  </li>
 	  <li>
-            <input type="checkbox" id="checkbox-2" name="checkbox-accordion" />
-            <label htmlFor="checkbox-2">View A Recipe</label>
-            <div id="accordian-recipe-list" className="accordionContent">
+	    <input type="checkbox" id="checkbox-2" name="checkbox-accordion" />
+	    <label htmlFor="checkbox-2">View A Recipe</label>
+	    <div id="accordian-recipe-list" className="accordionContent">
 	      <RecipeSelector recipeListUrl='/api/recipes' />
-            </div>
-          </li>
+	    </div>
+	  </li>
 	</ul>
       </div>
     </div>
