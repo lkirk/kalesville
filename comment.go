@@ -28,7 +28,7 @@ func (c *Comment) getComment(db *sql.DB) error {
 func getCommentsGivenDB(db *sql.DB) (comments []Comment, err error) {
 	comments = make([]Comment, 0)
 	rows, err := db.Query(
-		`SELECT "id", "author", "text" FROM "user_comments";`)
+		`SELECT "id", "author", "text" FROM "user_comments" uc ORDER BY uc.id DESC;`)
 	if err != nil {
 		return
 	}
