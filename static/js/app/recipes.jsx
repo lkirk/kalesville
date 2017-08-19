@@ -1,11 +1,11 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Remarkable = require('remarkable');
-var request = require('superagent');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Remarkable from 'remarkable';
+import request from 'superagent';
 
 
 function addCss(cssCode) {
-    var styleElement = document.createElement("style");
+    const styleElement = document.createElement("style");
     styleElement.type = "text/css";
     if (styleElement.styleSheet) {
 	styleElement.styleSheet.cssText = cssCode;
@@ -17,39 +17,39 @@ function addCss(cssCode) {
 
 function dynamicallyAdjustAcordionHeight(selector, height, unit) {
     addCss(
-	selector + '{' + 'height:' + height + unit + ';' + '}'
+	`${selector}{height:${height}${unit};}`
     );
 }
 
-var RecipeForm = React.createClass({
-    getInitialState: function() {
+const RecipeForm = React.createClass({
+    getInitialState() {
 	return {title:'', ingredients: '', procedures: ''};
     },
 
-    handleTitleChange: function(e) {
-	this.setState({title: e.target.value});
+    handleTitleChange({target}) {
+	this.setState({title: target.value});
     },
 
-    handleIngredientsChange: function(e) {
-	this.setState({ingredients: e.target.value});
+    handleIngredientsChange({target}) {
+	this.setState({ingredients: target.value});
     },
 
-    handleProceduresChange: function(e) {
-	this.setState({procedures: e.target.value});
+    handleProceduresChange({target}) {
+	this.setState({procedures: target.value});
     },
 
-    handleSubmit: function(e) {
+    handleSubmit(e) {
 	e.preventDefault();
-	var title = this.state.title.trim();
-	var ingredients = this.state.ingredients.trim();
-	var procedures = this.state.procedures.trim();
+	const title = this.state.title.trim();
+	const ingredients = this.state.ingredients.trim();
+	const procedures = this.state.procedures.trim();
 	if (!title || !ingredients || !procedures) {
 	    return;
 	}
 	this.props.onRecipeSubmit({
-	    title: title,
-	    ingredients: ingredients,
-	    procedures: procedures
+	    title,
+	    ingredients,
+	    procedures
 	});
 	this.setState({
 	    title: '',
@@ -58,7 +58,7 @@ var RecipeForm = React.createClass({
 	});
     },
 
-    render: function() {
+    render() {
 	return (
 	    <form className="recipeForm" onSubmit={this.handleSubmit}>
 	      <div>
@@ -93,24 +93,24 @@ var RecipeForm = React.createClass({
 });
 
 
-var RecipeFormDisplay = React.createClass({
+const RecipeFormDisplay = React.createClass({
 
-    handleRecipeSubmit: function(recipe) {
+    handleRecipeSubmit({title, ingredients, procedures}) {
 	request
 	    .post(this.props.postUrl)
 	    .send({
-		title: recipe.title,
-		ingredients: recipe.ingredients,
-		procedures: recipe.procedures
+		title,
+		ingredients,
+		procedures
 	    })
-	    .end(function(err, res){
-		if (err || !res.ok) {
+	    .end(function(err, {ok}) {
+		if (err || !ok) {
 		    console.error(this.props.url, err.toString());
 		}
 	    });
     },
 
-    render: function() {
+    render() {
 	return (
 	        <div className="recipeFormDisplay">
 		  <RecipeForm onRecipeSubmit={this.handleRecipeSubmit} />
@@ -120,15 +120,15 @@ var RecipeFormDisplay = React.createClass({
 
 });
 
-var RecipeSelector = React.createClass({
+const RecipeSelector = React.createClass({
 
-    getInitialState: function() {
+    getInitialState() {
 	return {
 	    data: null
 	}
     },
 
-    getRecipeList: function() {
+    getRecipeList() {
 	request.get(this.props.recipeListUrl)
 	.end(
 	    function(err,res) {
@@ -145,30 +145,26 @@ var RecipeSelector = React.createClass({
 	    }.bind(this));
     },
 
-    componentDidMount: function() {
+    componentDidMount() {
 	this.getRecipeList()
     },
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
 	this.serverRequest.abort();
     },
 
-    render: function() {
+    render() {
 	if (this.state.data) {
-	    var height = String(this.state.data.length * 2 + 2.5);
+	    const height = String(this.state.data.length * 2 + 2.5);
 	    dynamicallyAdjustAcordionHeight(
 		'.vertical [type=checkbox]:checked ~ label ~ .accordionContent#accordian-recipe-list', height, 'em');
 	    return (
-		<div id="navcontainer">
-		  <ul id="navlist">
-		    {this.state.data.map(function(recipe) {
-			return (
-		            <li><a href={['/recipe/' + recipe.id]}>{recipe.title}</a></li>
-			)
-		    })}
-		  </ul>
-		</div>
-	    )
+            <div id="navcontainer">
+              <ul id="navlist">
+                {this.state.data.map(({id, title}) => <li><a href={[`/recipe/${id}`]}>{title}</a></li>)}
+              </ul>
+            </div>
+        );
 	} else {
 	    return (
 		<div className='recipeSelector'></div>
@@ -176,6 +172,7 @@ var RecipeSelector = React.createClass({
 	}
     }
 });
+
 
 let components = (
     <div>
