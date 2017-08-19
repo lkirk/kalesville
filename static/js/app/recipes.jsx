@@ -21,22 +21,23 @@ function dynamicallyAdjustAcordionHeight(selector, height, unit) {
     );
 }
 
-const RecipeForm = React.createClass({
-    getInitialState() {
-	return {title:'', ingredients: '', procedures: ''};
-    },
+class RecipeForm extends React.Component {
+    constructor(props) {
+	super(props);
+	this.state = {title:'', ingredients: '', procedures: ''};
+    }
 
     handleTitleChange({target}) {
 	this.setState({title: target.value});
-    },
+    }
 
     handleIngredientsChange({target}) {
 	this.setState({ingredients: target.value});
-    },
+    }
 
     handleProceduresChange({target}) {
 	this.setState({procedures: target.value});
-    },
+    }
 
     handleSubmit(e) {
 	e.preventDefault();
@@ -56,7 +57,7 @@ const RecipeForm = React.createClass({
 	    ingredients: '',
 	    procedures: ''
 	});
-    },
+    }
 
     render() {
 	return (
@@ -90,11 +91,10 @@ const RecipeForm = React.createClass({
 	);
     }
 
-});
+};
 
 
-const RecipeFormDisplay = React.createClass({
-
+class RecipeFormDisplay extends React.Component {
     handleRecipeSubmit({title, ingredients, procedures}) {
 	request
 	.post(this.props.postUrl)
@@ -108,7 +108,7 @@ const RecipeFormDisplay = React.createClass({
 		console.error(this.props.url, err.toString());
 	    }
 	});
-    },
+    }
 
     render() {
 	return (
@@ -118,15 +118,13 @@ const RecipeFormDisplay = React.createClass({
 	);
     }
 
-});
+};
 
-const RecipeSelector = React.createClass({
-
-    getInitialState() {
-	return {
-	    data: null
-	}
-    },
+class RecipeSelector extends React.Component {
+    constructor(props) {
+	super(props);
+	this.state = {data: null};
+    }
 
     getRecipeList() {
 	request.get(this.props.recipeListUrl)
@@ -143,15 +141,15 @@ const RecipeSelector = React.createClass({
 		    });
 		}
 	    }.bind(this));
-    },
+    }
 
     componentDidMount() {
 	this.getRecipeList()
-    },
+    }
 
     componentWillUnmount() {
 	this.serverRequest.abort();
-    },
+    }
 
     render() {
 	if (this.state.data) {
@@ -171,7 +169,7 @@ const RecipeSelector = React.createClass({
 	    )
 	}
     }
-});
+};
 
 
 let components = (
