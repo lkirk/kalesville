@@ -61,13 +61,13 @@ class RecipeForm extends React.Component {
 
     render() {
 	return (
-	    <form className="recipeForm" onSubmit={this.handleSubmit}>
+	    <form className="recipeForm" onSubmit={this.handleSubmit.bind(this)}>
 	      <div>
 		<input
 		  type="text"
 		  placeholder="Recipe Title"
 		  value={this.state.title}
-		  onChange={this.handleTitleChange}
+		  onChange={this.handleTitleChange.bind(this)}
 		  />
 	      </div>
 	      <div>
@@ -75,7 +75,7 @@ class RecipeForm extends React.Component {
 		  type="text"
 		  placeholder="Enter ingredients here. Markdown is completely valid, see here: "
 		  value={this.state.ingredients}
-		  onChange={this.handleIngredientsChange}
+		  onChange={this.handleIngredientsChange.bind(this)}
 		  />
 	      </div>
 	      <div>
@@ -83,7 +83,7 @@ class RecipeForm extends React.Component {
 		  type="text"
 		  placeholder="Enter a procedure list here. Markdown is completely valid here too!"
 		  value={this.state.procedures}
-		  onChange={this.handleProceduresChange}
+		  onChange={this.handleProceduresChange.bind(this)}
 		  />
 	      </div>
 	      <input type="submit" />
@@ -113,7 +113,7 @@ class RecipeFormDisplay extends React.Component {
     render() {
 	return (
 	    <div className="recipeFormDisplay">
-	      <RecipeForm onRecipeSubmit={this.handleRecipeSubmit} />
+	      <RecipeForm onRecipeSubmit={this.handleRecipeSubmit.bind(this)} />
 	    </div>
 	);
     }
