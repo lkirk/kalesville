@@ -2,6 +2,14 @@
 WD:=$(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 SHELL:=/bin/bash -eo pipefail
 
+DEFAULT_GOAL: go-build
+
+go-build:
+	CGO_ENABLED=0 go build
+
+clean:
+	rm kalesville
+
 ### docker compose
 DOCKER-COMPOSE:=docker-compose -f $(WD)/docker/compose/dev/docker-compose.yml
 O:=
