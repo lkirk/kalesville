@@ -2,10 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"reflect"
 
 	"github.com/gorilla/mux"
 )
@@ -48,7 +50,7 @@ func initializeRouter(db *sql.DB) *mux.Router {
 func initializeDB(user, password, host, dbname string, port int) *sql.DB {
 	dbString := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
 		user, password, host, port, dbname)
-	log.Printf("connecting to %s:%d/%s", host, port, dbname)
+	log.Printf("db: connecting to '%s:%d/%s'", host, port, dbname)
 	db, err := sql.Open("postgres", dbString)
 	if err != nil {
 		log.Fatal(err)
@@ -57,35 +59,71 @@ func initializeDB(user, password, host, dbname string, port int) *sql.DB {
 }
 
 func runServer(addr string, db *sql.DB) {
-	log.Printf("Starting Kalesville at %v", addr)
+	log.Printf("starting Kalesville at %v", addr)
 	router := initializeRouter(db)
 	log.Fatal(http.ListenAndServe(addr, router))
 }
 
-func parseCLIArgs(addr, dbUser, dbPass, dbName, dbHost *string, dbPort *int) {
-	flag.StringVar(addr, "addr", ":8000", "web address to accept requests from")
+func validateCLIArgs(a cliArgs) {
+	args := reflect.TypeOf(a)
+	argValues := reflect.ValueOf(&a).Elem()
+	for i := 0; i < args.NumField(); i++ {
+		arg := args.Field(i)
+		tag := arg.Tag.Get("required")
 
-	flag.StringVar(dbUser, "db-user", "postgres", "database username")
-	flag.StringVar(dbPass, "db-pass", "postgres", "database password")
-	flag.StringVar(dbName, "db-name", "kalesville-web", "database name")
-	flag.StringVar(dbHost, "db-host", "kalesville", "database hostname")
-	flag.IntVar(dbPort, "db-port", 5432, "database port")
+		required := false
+		if tag == "true" {
+			required = true
+		}
+
+		if required {
+			value := argValues.Field(i).Interface()
+			if value == "" {
+				msg := fmt.Sprintf(
+					"cli: %v is a required field", arg.Name)
+				log.Fatal(errors.New(msg))
+			}
+
+		}
+
+	}
+}
+
+func parseAndValidateCLIArgs() (args cliArgs) {
+	flag.StringVar(&args.Addr, "addr", ":8000",
+		"web address to accept requests from")
+	flag.StringVar(&args.DbUser, "db-user", "", "database username")
+	flag.StringVar(&args.DbPass, "db-pass", "", "database password")
+	flag.StringVar(&args.DbName, "db-name", "", "database name")
+	flag.StringVar(&args.DbHost, "db-host", "", "database hostname")
+	flag.IntVar(&args.DbPort, "db-port", 5432, "database port")
 
 	flag.Parse()
+
+	validateCLIArgs(args)
+
+	return args
+}
+
+type cliArgs struct {
+	Addr   string
+	DbUser string `required:"true"`
+	DbPass string `required:"true"`
+	DbName string `required:"true"`
+	DbHost string `required:"true"`
+	DbPort int    `required:"true"`
 }
 
 func main() {
-	var (
-		addr   string
-		dbUser string
-		dbPass string
-		dbName string
-		dbHost string
-		dbPort int
+	args := parseAndValidateCLIArgs()
+
+	db := initializeDB(
+		args.DbUser,
+		args.DbPass,
+		args.DbHost,
+		args.DbName,
+		args.DbPort,
 	)
 
-	parseCLIArgs(&addr, &dbUser, &dbPass, &dbName, &dbHost, &dbPort)
-	db := initializeDB(dbUser, dbPass, dbHost, dbName, dbPort)
-
-	runServer(addr, db)
+	runServer(args.Addr, db)
 }
