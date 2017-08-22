@@ -3,18 +3,18 @@ import ReactDOM from 'react-dom';
 import Remarkable from 'remarkable';
 import request from 'superagent';
 
-const Recipe  = React.createClass({
-
-    getInitialState() {
-	return {
+class Recipe extends React.Component {
+    constructor(props) {
+	super(props);
+	this.state = {
 	    data: {
 		id: null,
 		ingredients: null,
 		procedures: null,
 		title: null
 	    }
-	}
-    },
+	};
+    }
 
     componentDidMount() {
 	const re = /(\/recipe\/[0-9A-Za-z-]+)\/?$/;
@@ -31,11 +31,11 @@ const Recipe  = React.createClass({
 		    }
 		});
 	}
-    },
+    }
 
     componentWillUnmount() {
 	this.serverRequest.abort();
-    },
+    }
 
     rawMarkup(stringData) {
 	const md = new Remarkable();
@@ -46,7 +46,7 @@ const Recipe  = React.createClass({
 	    var rawMarkup = null
 	};
 	return { __html: rawMarkup };
-    },
+    }
 
     render() {
 	return (
@@ -59,7 +59,7 @@ const Recipe  = React.createClass({
 	    </div>
 	)
     }
-});
+};
 
 
 ReactDOM.render(
