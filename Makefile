@@ -2,6 +2,10 @@
 WD:=$(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 SHELL:=/bin/bash -eo pipefail
 
+### run dev stack
+run-dev: go-build down up wait migrate
+	$(MAKE) logs O=-f
+
 DEFAULT_GOAL: go-build
 
 go-build:
