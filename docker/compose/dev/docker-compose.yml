@@ -13,6 +13,11 @@ services:
       - ../../../kalesville:/opt/kalesville/kalesville:ro
       - ../../../static/js/public:/opt/kalesville/static/js/public/:rw
       - ../../../static/js/app:/opt/kalesville/static/js/app:ro
+      - ../../../scripts:/opt/kalesville/scripts:ro
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=kalesville-web
 
   nginx:
     image: lloydkirk/kalesville-nginx:dev
