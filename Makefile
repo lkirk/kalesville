@@ -53,57 +53,29 @@ migrate:
 ### db
 
 ### release
-release-patch:
-	@ \
-	set -x \
-	git checkout dev ;\
-	git pull ;\
-	git checkout master ;\
-	git pull ;\
-	NEW_VERSION=$$(git describe | ./scripts/increment-version patch) ;\
-	git checkout dev ;\
-	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
-	git commit -m'Increment patch version of docker-compose.yml files by Makefile [ci skip]' devops/{kalesville,nginx}/docker-compose.yml ;\
-	git push ;\
-	git checkout master ;\
-	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
-	git tag -a -m'Increment patch version by Makefile' $$NEW_VERSION ;\
-	git push --tags ;\
-	git checkout dev
+RELEASE-INCREMENTS:=major minor patch
 
-release-minor:
+define release_template =
+rel-$(1):
 	@ \
 	set -x \
 	git checkout dev ;\
 	git pull ;\
 	git checkout master ;\
 	git pull ;\
-	NEW_VERSION=$$(git describe | ./scripts/increment-version minor) ;\
+	NEW_VERSION=$$(git describe | ./scripts/increment-version $(1)) ;\
 	git checkout dev ;\
-	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
-	git commit -m'Increment minor version of docker-compose.yml files by Makefile [ci skip]' devops/{kalesville,nginx}/docker-compose.yml ;\
+	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" \
+		devops/{kalesville,nginx}/docker-compose.yml ;\
+	git commit -m'Increment $(1) version of docker-compose.yml files by Makefile [ci skip]' \
+		devops/{kalesville,nginx}/docker-compose.yml ;\
 	git push ;\
 	git checkout master ;\
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
-	git tag -a -m'Increment minor version by Makefile' $$NEW_VERSION ;\
+	git tag -a -m'Increment $(1) version by Makefile' $$NEW_VERSION ;\
 	git push --tags ;\
 	git checkout dev
+endef
 
-release-major:
-	@ \
-	set -x \
-	git checkout dev ;\
-	git pull ;\
-	git checkout master ;\
-	git pull ;\
-	NEW_VERSION=$$(git describe | ./scripts/increment-version major) ;\
-	git checkout dev ;\
-	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
-	git commit -m'Increment major version of docker-compose.yml files by Makefile [ci skip]' devops/{kalesville,nginx}/docker-compose.yml ;\
-	git push ;\
-	git checkout master ;\
-	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
-	git tag -a -m'Increment major version by Makefile' $$NEW_VERSION ;\
-	git push --tags ;\
-	git checkout dev
+$(foreach increment,$(RELEASE-INCREMENTS),$(eval $(call release_template,$(increment))))
 ### release
