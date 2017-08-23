@@ -56,7 +56,7 @@ migrate:
 RELEASE-INCREMENTS:=major minor patch
 
 define release_template =
-rel-$(1):
+release-$(1):
 	@ \
 	set -x \
 	git checkout dev ;\
