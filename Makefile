@@ -1,4 +1,6 @@
 ### -=<(Kalesville)>=-
+DEFAULT_GOAL: go-build
+
 WD:=$(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 SHELL:=/bin/bash -eo pipefail
 
@@ -6,9 +8,10 @@ SHELL:=/bin/bash -eo pipefail
 run-dev: go-build down up wait migrate
 	$(MAKE) logs O=-f
 
-DEFAULT_GOAL: go-build
+kalesville:=$(WD)/kalesville
 
-go-build:
+go-build: $(kalesville)
+$(kalesville):
 	CGO_ENABLED=0 go build
 
 clean:
