@@ -159,7 +159,8 @@ class RecipeSelector extends React.Component {
 	    return (
 		<div id="navcontainer">
 		  <ul id="navlist">
-                    {this.state.data.map(({id, title}) => <li><a href={[`/recipe/${id}`]}>{title}</a></li>)}
+                    {this.state.data.map(({id, title}) =>
+		      <li key={id}><a href={[`/recipe/${id}`]}>{title}</a></li>)}
 		  </ul>
 		</div>
             );
@@ -174,7 +175,6 @@ class RecipeSelector extends React.Component {
 
 let components = (
     <div>
-      {/* <RecipeSelector recipeListUrl='/api/recipes' /> */}
       <div className="accordion vertical">
 	<ul>
 	  <li>
