@@ -14,6 +14,7 @@ services:
       - ../../../static/js/public:/opt/kalesville/static/js/public/:rw
       - ../../../static/js/app:/opt/kalesville/static/js/app:ro
       - ../../../scripts:/opt/kalesville/scripts:ro
+      - ../../../package.json:/opt/kalesville/package.json:rw
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
