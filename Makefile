@@ -1,5 +1,6 @@
 ### -=<(Kalesville)>=-
 DEFAULT_GOAL: go-build
+.PHONY: go-build clean run-dev
 
 WD:=$(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 SHELL:=/bin/bash -eo pipefail
@@ -19,8 +20,10 @@ clean:
 
 ### docker compose
 DOCKER-COMPOSE:=docker-compose -f $(WD)/docker/compose/dev/docker-compose.yml
+# (O)ption (S)ervice (C)ommand
 O:=
 S:=
+C:=
 build:
 	$(DOCKER-COMPOSE) build $(O) $(S)
 
@@ -38,11 +41,17 @@ restart:
 
 logs:
 	$(DOCKER-COMPOSE) logs $(O) $(S)
+
+exec:
+	$(DOCKER-COMPOSE) exec $(O) $(S) $(C)
+
+run:
+	$(DOCKER-COMPOSE) run $(O) $(S) $(C)
 ### docker compose
 
 ### db
 wait:
-	sleep 5
+	sleep 9
 
 migrate:
 	@for f in migrations/*.sql; do \
