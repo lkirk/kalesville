@@ -72,8 +72,9 @@ class RecipeForm extends React.Component {
 	      </div>
 	      <div>
 		<textarea
+		  className="display-linebreak"
 		  type="text"
-		  placeholder="Enter ingredients here. Markdown is completely valid, see here: "
+		  placeholder="Enter ingredients here. Use markdown for formatting"
 		  value={this.state.ingredients}
 		  onChange={this.handleIngredientsChange.bind(this)}
 		  />
@@ -81,7 +82,7 @@ class RecipeForm extends React.Component {
 	      <div>
 		<textarea
 		  type="text"
-		  placeholder="Enter a procedure list here. Markdown is completely valid here too!"
+		  placeholder="Enter ingredients here. Use markdown for formatting"
 		  value={this.state.procedures}
 		  onChange={this.handleProceduresChange.bind(this)}
 		  />
