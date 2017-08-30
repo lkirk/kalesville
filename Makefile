@@ -19,7 +19,8 @@ clean:
 	rm kalesville
 
 ### docker compose
-DOCKER-COMPOSE:=docker-compose -f $(WD)/docker/compose/dev/docker-compose.yml
+ENV:=dev
+DOCKER-COMPOSE:=docker-compose -f $(WD)/docker/compose/$(ENV)/docker-compose.yml
 # (O)ption (S)ervice (C)ommand
 O:=
 S:=
