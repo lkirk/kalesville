@@ -85,6 +85,7 @@ release-$(1):
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
 	git tag -a -m'Increment $(1) version by Makefile' $$$$NEW_VERSION ;\
 	git push --tags ;\
+	git push ;\
 	git checkout dev
 endef
 
