@@ -73,7 +73,7 @@ release-$(1):
 	git pull ;\
 	git checkout master ;\
 	git pull ;\
-	NEW_VERSION=$$$(git describe | ./scripts/increment-version $(1)) ;\
+	NEW_VERSION=\$$(git describe | ./scripts/increment-version $(1)) ;\
 	git checkout dev ;\
 	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$$NEW_VERSION/g" \
 		$(WD)/docker/compose/prd/docker-compose.yml ;\
