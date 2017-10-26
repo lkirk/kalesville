@@ -1,7 +1,7 @@
 version: '2'
 services:
   web:
-    image: lloydkirk/kalesville:0.1.0
+    image: lloydkirk/kalesville:0.1.1
     build:
       context: ../../../
       dockerfile: ./docker/kalesville/Dockerfile
@@ -15,7 +15,7 @@ services:
     build:
       context: ../../../
       dockerfile: ./docker/nginx/Dockerfile
-    image: lloydkirk/kalesville-nginx:0.1.0
+    image: lloydkirk/kalesville-nginx:0.1.1
     container_name: nginx
     ports:
       - "80:80"
@@ -34,6 +34,6 @@ services:
     volumes:
       - /opt/kalesville/pg-prd:/var/lib/postgresql/data:rw
     env_file:
-      - /home/lkirk/.kalesville-env-prd
+      - ~/.kalesville-env-prd
     environment:
       - POSTGRES_DB=kalesville-web
