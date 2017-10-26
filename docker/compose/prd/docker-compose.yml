@@ -1,7 +1,7 @@
 version: '2'
 services:
   web:
-    image: lloydkirk/kalesville:EW_VERSION
+    image: lloydkirk/kalesville:0.0.12
     build:
       context: ../../../
       dockerfile: ./docker/kalesville/Dockerfile
@@ -15,7 +15,7 @@ services:
     build:
       context: ../../../
       dockerfile: ./docker/nginx/Dockerfile
-    image: lloydkirk/kalesville-nginx:EW_VERSION
+    image: lloydkirk/kalesville-nginx:0.0.12
     container_name: nginx
     ports:
       - "80:80"
