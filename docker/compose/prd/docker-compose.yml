@@ -3,7 +3,7 @@ services:
   web:
     image: lloydkirk/kalesville:0.0.8
     build:
-      context: ./
+      context: ../../../
       dockerfile: ./docker/kalesville/Dockerfile
     container_name: kalesville-web
     external_links:
@@ -13,7 +13,7 @@ services:
 
   nginx:
     build:
-      context: ./
+      context: ../../../
       dockerfile: ./docker/nginx/Dockerfile
     image: lloydkirk/kalesville-nginx:0.0.8
     container_name: nginx
