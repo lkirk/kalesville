@@ -1,15 +1,14 @@
 ---
-- hosts: localhost
+- hosts: kalesville-dev
   vars:
-    project_dir: /home/lkirk/test-ansible-copy
+    ansible_python_interpreter: /home/core/python
+    project_dir: /home/core/kalesville
     docker_compose: "{{ project_dir }}/docker-compose"
   tasks:
     - name: create location for docker-compose
       file:
         path: "{{ docker_compose | dirname }}"
         state: directory
-        owner: lkirk
-        group: lkirk
         mode: 0775
     - name: get docker-compose
       get_url:
@@ -38,8 +37,6 @@
       copy:
         src: "{{ item }}"
         dest: "{{ project_dir }}/{{ item | regex_replace('^../', '') }}"
-        owner: lkirk
-        group: lkirk
         mode: 0644
         state: file
       with_items: "{{ docker_compose.files | map(attribute='path') | list }}"
