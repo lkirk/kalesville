@@ -75,7 +75,7 @@ release-$(1):
 	git pull ;\
 	NEW_VERSION=$$$(git describe | ./scripts/increment-version $(1)) ;\
 	git checkout dev ;\
-	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" \
+	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$$NEW_VERSION/g" \
 		$(WD)/docker/compose/prd/docker-compose.yml ;\
 	git commit -m'Increment $(1) version of docker-compose.yml files by Makefile [ci skip]' \
 		$(WD)/docker/compose/prd/docker-compose.yml ;\
