@@ -1,96 +1,91 @@
 ### -=<(Kalesville)>=-
+DEFAULT_GOAL: go-build
+.PHONY: go-build clean run-dev
 
 WD:=$(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 SHELL:=/bin/bash -eo pipefail
 
+### run dev stack
+run-dev: go-build down up wait migrate
+	$(MAKE) logs O=-f
+
+kalesville:=$(WD)/kalesville
+
+go-build: $(kalesville)
+$(kalesville):
+	CGO_ENABLED=0 go build
+
+clean:
+	rm kalesville
+
 ### docker compose
-COMPOSE-FILES:=$(shell echo '-f devops/'{postgres,nginx,kalesville}/docker-compose.yml)
-DOCKER-COMPOSE:=docker-compose $(COMPOSE-FILES)
-OPTS:=
-build-web:
-	$(DOCKER-COMPOSE) build $(OPTS) web
-
-build-nginx:
-	$(DOCKER-COMPOSE) build $(OPTS) nginx
-
-build-web-dev:
-	$(DOCKER-COMPOSE) build $(OPTS) web-dev
-
-build-nginx-dev:
-	$(DOCKER-COMPOSE) build $(OPTS) nginx-dev
+ENV:=dev
+DOCKER-COMPOSE:=docker-compose -f $(WD)/docker/compose/$(ENV)/docker-compose.yml
+# (O)ption (S)ervice (C)ommand
+O:=
+S:=
+C:=
+build:
+	$(DOCKER-COMPOSE) build $(O) $(S)
 
 up:
-	$(DOCKER-COMPOSE) up -d $(OPTS) nginx
+	$(DOCKER-COMPOSE) up -d $(O) $(S)
 
-up-dev:
-	$(DOCKER-COMPOSE) up -d $(OPTS) nginx-dev
+pull:
+	$(DOCKER-COMPOSE) pull $(O) $(S)
 
 down:
-	$(DOCKER-COMPOSE) down
+	$(DOCKER-COMPOSE) down $(O) $(S)
 
 restart:
-	$(DOCKER-COMPOSE) restart
+	$(DOCKER-COMPOSE) restart $(O) $(S)
 
 logs:
-	$(DOCKER-COMPOSE) logs -f
+	$(DOCKER-COMPOSE) logs $(O) $(S)
+
+exec:
+	$(DOCKER-COMPOSE) exec $(O) $(S) $(C)
+
+run:
+	$(DOCKER-COMPOSE) run $(O) $(S) $(C)
 ### docker compose
 
 ### db
-migrate-dev:
-	for f in migrations/*.sql; do \
+wait:
+	sleep 9
+
+migrate:
+	@for f in migrations/*.sql; do \
 		echo '### running' $$f ;\
-		docker exec -i -ePGUSER=mysql -ePGPASSWORD=mysql -ePGDATABASE=kalesville-web \
-		kalesville-pg-dev psql -v ON_ERROR_STOP=1 < $$f ;\
+		$(DOCKER-COMPOSE) exec db psql -U postgres -d kalesville-web -f $$f ;\
 		echo '### done' $$f ;\
 	done
 ### db
 
 ### release
-release-patch:
-	@git checkout dev ;\
-	git pull ;\
-	git checkout master ;\
-	git pull ;\
-	NEW_VERSION=$$(git describe | ./scripts/increment-version patch) ;\
-	git checkout dev ;\
-	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
-	git commit -m'Increment patch version of docker-compose.yml files by Makefile [ci skip]' devops/{kalesville,nginx}/docker-compose.yml ;\
-	git push ;\
-	git checkout master ;\
-	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
-	git tag -a -m'Increment patch version by Makefile' $$NEW_VERSION ;\
-	git push --tags ;\
-	git checkout dev
+RELEASE-INCREMENTS:=major minor patch
 
-release-minor:
-	@git checkout dev ;\
+define release_template =
+release-$(1):
+	@ \
+	set -x \
+	git checkout dev ;\
 	git pull ;\
 	git checkout master ;\
 	git pull ;\
-	NEW_VERSION=$$(git describe | ./scripts/increment-version minor) ;\
+	NEW_VERSION=$$(git describe | ./scripts/increment-version $(1)) ;\
 	git checkout dev ;\
-	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
-	git commit -m'Increment minor version of docker-compose.yml files by Makefile [ci skip]' devops/{kalesville,nginx}/docker-compose.yml ;\
+	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" \
+		$(WD)/docker/compose/prd/docker-compose.yml ;\
+	git commit -m'Increment $(1) version of docker-compose.yml files by Makefile [ci skip]' \
+		$(WD)/docker/compose/prd/docker-compose.yml ;\
 	git push ;\
 	git checkout master ;\
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
-	git tag -a -m'Increment minor version by Makefile' $$NEW_VERSION ;\
+	git tag -a -m'Increment $(1) version by Makefile' $$NEW_VERSION ;\
 	git push --tags ;\
 	git checkout dev
+endef
 
-release-major:
-	@git checkout dev ;\
-	git pull ;\
-	git checkout master ;\
-	git pull ;\
-	NEW_VERSION=$$(git describe | ./scripts/increment-version major) ;\
-	git checkout dev ;\
-	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$NEW_VERSION/g" devops/{kalesville,nginx}/docker-compose.yml ;\
-	git commit -m'Increment major version of docker-compose.yml files by Makefile [ci skip]' devops/{kalesville,nginx}/docker-compose.yml ;\
-	git push ;\
-	git checkout master ;\
-	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
-	git tag -a -m'Increment major version by Makefile' $$NEW_VERSION ;\
-	git push --tags ;\
-	git checkout dev
+$(foreach increment,$(RELEASE-INCREMENTS),$(eval $(call release_template,$(increment))))
 ### release

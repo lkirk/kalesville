@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+  vars:
+  gather_facts: no
+  tasks:
+
+    - name: UP:kalesville-(PRD) 
+      docker_service:
+        project_name: kalesville
+        project_src: ./
+        # pull: yes
+        build: no
+        state: present
+      tags: up
+
+    - name: DOWN:kalesville-(PRD)
+      docker_service:
+        project_name: kalesville
+        pull: yes
+        build: no
+        state: absent
+        project_src: ./
+      tags: down

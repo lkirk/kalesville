@@ -1,44 +1,44 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Remarkable = require('remarkable');
-var request = require('superagent');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Remarkable from 'remarkable';
+import request from 'superagent';
 
-var Recipe  = React.createClass({
-
-    getInitialState: function() {
-	return {
+class Recipe extends React.Component {
+    constructor(props) {
+	super(props);
+	this.state = {
 	    data: {
 		id: null,
 		ingredients: null,
 		procedures: null,
 		title: null
 	    }
-	}
-    },
+	};
+    }
 
-    componentDidMount: function() {
-	var re = /(\/recipe\/[0-9A-Za-z-]+)\/?$/;
-	var match = re.exec(window.location.href);
+    componentDidMount() {
+	const re = /(\/recipe\/[0-9A-Za-z-]+)\/?$/;
+	const match = re.exec(window.location.href);
 	if (match){
-	    var url = "/api" + match[match.length-1];
+	    const url = `/api${match[match.length-1]}`;
 	    request.get(url)
 	    .end(
-		function(err,res) {
-		    if(err || !res.ok) {
+		(err, {ok, text}) => {
+		    if(err || !ok) {
 			console.error(err.toString());
 		    } else {
-			this.setState({data: JSON.parse(res.text)});
+			this.setState({data: JSON.parse(text)});
 		    }
-		}.bind(this));
+		});
 	}
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
 	this.serverRequest.abort();
-    },
+    }
 
-    rawMarkup: function(stringData) {
-	var md = new Remarkable();
+    rawMarkup(stringData) {
+	const md = new Remarkable();
 
 	if (stringData) {
 	    var rawMarkup = md.render(stringData)
@@ -46,9 +46,9 @@ var Recipe  = React.createClass({
 	    var rawMarkup = null
 	};
 	return { __html: rawMarkup };
-    },
+    }
 
-    render: function() {
+    render() {
 	return (
 	    <div>
 	      <h1>{this.state.data.title}</h1>
@@ -59,7 +59,7 @@ var Recipe  = React.createClass({
 	    </div>
 	)
     }
-});
+};
 
 
 ReactDOM.render(

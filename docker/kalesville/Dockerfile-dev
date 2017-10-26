@@ -1,0 +1,5 @@
+FROM node:7.5.0
+WORKDIR /opt/kalesville
+ADD . .
+RUN npm install
+CMD ./scripts/entrypoints/run-web-dev

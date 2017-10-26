@@ -8,13 +8,16 @@ touch ~/.kalesville-env-prd
 glide install
 CGO_ENABLED=0 go build
 
+# if our branch name is a version number, build in prd mode.
 if $(egrep -q '[0-9]+\.[0-9]+\.[0-9]+' <<< "$TRAVIS_BRANCH"); then
     set +x
     source ~/.nvm/nvm.sh
     set -x
     npm install
+
+    export NODE_ENV=production
     npm run build
-    make build-web build-nginx
+    make build ENV=prd
 else
-    make build-web-dev build-nginx-dev
+    make build
 fi

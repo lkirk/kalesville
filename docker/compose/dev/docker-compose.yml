@@ -1,0 +1,51 @@
+version: '2'
+services:
+  web:
+    image: lloydkirk/kalesville:dev
+    build:
+      context: ../../../
+      dockerfile: ./docker/kalesville/Dockerfile-dev
+    external_links:
+      - db:kalesville-pg
+    depends_on:
+      - db
+    volumes:
+      - ../../../kalesville:/opt/kalesville/kalesville:ro
+      - ../../../static/js/public:/opt/kalesville/static/js/public/:rw
+      - ../../../static/js/app:/opt/kalesville/static/js/app:ro
+      - ../../../scripts:/opt/kalesville/scripts:ro
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=kalesville-web
+
+  nginx:
+    image: lloydkirk/kalesville-nginx:dev
+    build:
+      context: ../../../
+      dockerfile: ./docker/nginx/Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    external_links:
+      - web:kalesville
+    depends_on:
+      - web
+    volumes:
+      - ../../../static/:/usr/share/nginx/static/:ro
+      - ../../../static/js/public/:/usr/share/nginx/static/js/public/:ro
+      - ../../../docker/nginx/kalesville.nginx.conf:/etc/nginx/conf.d/kalesville.nginx.conf:ro
+      - ../../../docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  db:
+    image: lloydkirk/kalesville-postgres:dev
+    build:
+      context: ../../../
+      dockerfile: ./docker/postgres/Dockerfile
+    hostname: kalesville-pg
+    # volumes:
+    #   - /opt/kalesville/pg-dev:/var/lib/postgresql/data:rw
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=kalesville-web

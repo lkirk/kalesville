@@ -1,4 +1,9 @@
 #!/bin/bash
 trap 'kill %1; kill %2' SIGINT
-./app &
+./kalesville \
+    -db-host db \
+    -db-name $POSTGRES_DB \
+    -db-user $POSTGRES_USER \
+    -db-pass $POSTGRES_PASSWORD \
+    &
 npm run dev

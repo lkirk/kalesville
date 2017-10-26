@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+  # vars:
+  gather_facts: no
+  tasks:
+
+    - name: UP:kalesville-(DEV) 
+      docker_service:
+        project_name: kalesville
+        project_src: "{{ playbook_dir }}/../docker/compose/dev"
+        # pull: yes
+        recreate: never
+        build: no
+        state: present
+      tags: up
+
+    - name: DOWN:kalesville-(DEV)
+      docker_service:
+        project_name: kalesville
+        # pull: yes
+        build: no
+        state: absent
+        project_src: "{{ playbook_dir }}/../docker/compose/dev"
+      tags: down

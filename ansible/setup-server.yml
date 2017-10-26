@@ -1,18 +1,15 @@
 ---
-- hosts: localhost
+- hosts: kalesville-dev
   vars:
-    project_dir: /home/lkirk/test-ansible-copy
-    docker_compose: /home/lkirk/test-ansible-copy/docker-compose
-  remote_user: root
+    ansible_python_interpreter: /home/core/python
+    project_dir: /home/core/kalesville
+    docker_compose: "{{ project_dir }}/docker-compose"
   tasks:
     - name: create location for docker-compose
       file:
         path: "{{ docker_compose | dirname }}"
         state: directory
-        owner: lkirk
-        group: lkirk
         mode: 0775
-        recurse: yes
     - name: get docker-compose
       get_url:
         url: "https://github.com/docker/compose/releases/download/1.11.2/docker-compose-{{ ansible_system }}-{{ ansible_machine }}"
@@ -28,11 +25,10 @@
     - name: create location for compose files
       file:
         path: "{{ project_dir }}/{{ item | regex_replace('^../', '') | dirname }}"
-        state: directory
         owner: lkirk
         group: lkirk
         mode: 0775
-        recurse: yes
+        state: directory
       with_items: "{{ docker_compose.files | map(attribute='path') | list }}"
     # - debug:
     #     msg: "{{ item | regex_replace('^../', '') }}"
@@ -41,7 +37,6 @@
       copy:
         src: "{{ item }}"
         dest: "{{ project_dir }}/{{ item | regex_replace('^../', '') }}"
-        owner: lkirk
-        group: lkirk
         mode: 0644
+        state: file
       with_items: "{{ docker_compose.files | map(attribute='path') | list }}"

@@ -1,11 +1,11 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Remarkable = require('remarkable');
-var request = require('superagent');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Remarkable from 'remarkable';
+import request from 'superagent';
 
 
 function addCss(cssCode) {
-    var styleElement = document.createElement("style");
+    const styleElement = document.createElement("style");
     styleElement.type = "text/css";
     if (styleElement.styleSheet) {
 	styleElement.styleSheet.cssText = cssCode;
@@ -17,72 +17,74 @@ function addCss(cssCode) {
 
 function dynamicallyAdjustAcordionHeight(selector, height, unit) {
     addCss(
-	selector + '{' + 'height:' + height + unit + ';' + '}'
+	`${selector}{height:${height}${unit};}`
     );
 }
 
-var RecipeForm = React.createClass({
-    getInitialState: function() {
-	return {title:'', ingredients: '', procedures: ''};
-    },
+class RecipeForm extends React.Component {
+    constructor(props) {
+	super(props);
+	this.state = {title:'', ingredients: '', procedures: ''};
+    }
 
-    handleTitleChange: function(e) {
-	this.setState({title: e.target.value});
-    },
+    handleTitleChange({target}) {
+	this.setState({title: target.value});
+    }
 
-    handleIngredientsChange: function(e) {
-	this.setState({ingredients: e.target.value});
-    },
+    handleIngredientsChange({target}) {
+	this.setState({ingredients: target.value});
+    }
 
-    handleProceduresChange: function(e) {
-	this.setState({procedures: e.target.value});
-    },
+    handleProceduresChange({target}) {
+	this.setState({procedures: target.value});
+    }
 
-    handleSubmit: function(e) {
+    handleSubmit(e) {
 	e.preventDefault();
-	var title = this.state.title.trim();
-	var ingredients = this.state.ingredients.trim();
-	var procedures = this.state.procedures.trim();
+	const title = this.state.title.trim();
+	const ingredients = this.state.ingredients.trim();
+	const procedures = this.state.procedures.trim();
 	if (!title || !ingredients || !procedures) {
 	    return;
 	}
 	this.props.onRecipeSubmit({
-	    title: title,
-	    ingredients: ingredients,
-	    procedures: procedures
+	    title,
+	    ingredients,
+	    procedures
 	});
 	this.setState({
 	    title: '',
 	    ingredients: '',
 	    procedures: ''
 	});
-    },
+    }
 
-    render: function() {
+    render() {
 	return (
-	    <form className="recipeForm" onSubmit={this.handleSubmit}>
+	    <form className="recipeForm" onSubmit={this.handleSubmit.bind(this)}>
 	      <div>
 		<input
-	          type="text"
-	          placeholder="Recipe Title"
-	          value={this.state.title}
-	          onChange={this.handleTitleChange}
+		  type="text"
+		  placeholder="Recipe Title"
+		  value={this.state.title}
+		  onChange={this.handleTitleChange.bind(this)}
 		  />
 	      </div>
 	      <div>
 		<textarea
+		  className="display-linebreak"
 		  type="text"
-		  placeholder="Enter ingredients here. Markdown is completely valid, see here: "
+		  placeholder="Enter ingredients here. Use markdown for formatting"
 		  value={this.state.ingredients}
-		  onChange={this.handleIngredientsChange}
+		  onChange={this.handleIngredientsChange.bind(this)}
 		  />
 	      </div>
 	      <div>
 		<textarea
 		  type="text"
-		  placeholder="Enter a procedure list here. Markdown is completely valid here too!"
+		  placeholder="Enter ingredients here. Use markdown for formatting"
 		  value={this.state.procedures}
-		  onChange={this.handleProceduresChange}
+		  onChange={this.handleProceduresChange.bind(this)}
 		  />
 	      </div>
 	      <input type="submit" />
@@ -90,45 +92,42 @@ var RecipeForm = React.createClass({
 	);
     }
 
-});
+};
 
 
-var RecipeFormDisplay = React.createClass({
-
-    handleRecipeSubmit: function(recipe) {
+class RecipeFormDisplay extends React.Component {
+    handleRecipeSubmit({title, ingredients, procedures}) {
 	request
-	    .post(this.props.postUrl)
-	    .send({
-		title: recipe.title,
-		ingredients: recipe.ingredients,
-		procedures: recipe.procedures
-	    })
-	    .end(function(err, res){
-		if (err || !res.ok) {
-		    console.error(this.props.url, err.toString());
-		}
-	    });
-    },
+	.post(this.props.postUrl)
+	.send({
+	    title,
+	    ingredients,
+	    procedures
+	})
+	.end(function(err, {ok}) {
+	    if (err || !ok) {
+		console.error(this.props.url, err.toString());
+	    }
+	});
+    }
 
-    render: function() {
+    render() {
 	return (
-	        <div className="recipeFormDisplay">
-		  <RecipeForm onRecipeSubmit={this.handleRecipeSubmit} />
-		</div>
+	    <div className="recipeFormDisplay">
+	      <RecipeForm onRecipeSubmit={this.handleRecipeSubmit.bind(this)} />
+	    </div>
 	);
     }
 
-});
+};
 
-var RecipeSelector = React.createClass({
+class RecipeSelector extends React.Component {
+    constructor(props) {
+	super(props);
+	this.state = {data: null};
+    }
 
-    getInitialState: function() {
-	return {
-	    data: null
-	}
-    },
-
-    getRecipeList: function() {
+    getRecipeList() {
 	request.get(this.props.recipeListUrl)
 	.end(
 	    function(err,res) {
@@ -143,43 +142,40 @@ var RecipeSelector = React.createClass({
 		    });
 		}
 	    }.bind(this));
-    },
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
 	this.getRecipeList()
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
 	this.serverRequest.abort();
-    },
+    }
 
-    render: function() {
+    render() {
 	if (this.state.data) {
-	    var height = String(this.state.data.length * 2 + 2.5);
+	    const height = String(this.state.data.length * 2 + 2.5);
 	    dynamicallyAdjustAcordionHeight(
 		'.vertical [type=checkbox]:checked ~ label ~ .accordionContent#accordian-recipe-list', height, 'em');
 	    return (
 		<div id="navcontainer">
 		  <ul id="navlist">
-		    {this.state.data.map(function(recipe) {
-			return (
-		            <li><a href={['/recipe/' + recipe.id]}>{recipe.title}</a></li>
-			)
-		    })}
+                    {this.state.data.map(({id, title}) =>
+		      <li key={id}><a href={[`/recipe/${id}`]}>{title}</a></li>)}
 		  </ul>
 		</div>
-	    )
+            );
 	} else {
 	    return (
 		<div className='recipeSelector'></div>
 	    )
 	}
     }
-});
+};
+
 
 let components = (
     <div>
-      {/* <RecipeSelector recipeListUrl='/api/recipes' /> */}
       <div className="accordion vertical">
 	<ul>
 	  <li>
@@ -190,12 +186,12 @@ let components = (
 	    </div>
 	  </li>
 	  <li>
-            <input type="checkbox" id="checkbox-2" name="checkbox-accordion" />
-            <label htmlFor="checkbox-2">View A Recipe</label>
-            <div id="accordian-recipe-list" className="accordionContent">
+	    <input type="checkbox" id="checkbox-2" name="checkbox-accordion" />
+	    <label htmlFor="checkbox-2">View A Recipe</label>
+	    <div id="accordian-recipe-list" className="accordionContent">
 	      <RecipeSelector recipeListUrl='/api/recipes' />
-            </div>
-          </li>
+	    </div>
+	  </li>
 	</ul>
       </div>
     </div>
