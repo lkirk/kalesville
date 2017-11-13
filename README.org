@@ -1,4 +1,4 @@
 #+TITLE: Kalesville:
 *** Builds
     * Dev: [[https://travis-ci.org/lloydkirk/kalesville.svg?branch=dev]]
-    * Latest Release ([[https://github.com/lloydkirk/kalesville/tree/0.1.4][v0.1.4]]): [[https://travis-ci.org/lloydkirk/kalesville.svg?branch=0.1.4]]
+    * Latest Release [[https://github.com/lloydkirk/kalesville/tree/0.1.4][v0.1.4]]: [[https://travis-ci.org/lloydkirk/kalesville.svg?branch=0.1.4]]
