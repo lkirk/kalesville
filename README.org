@@ -1,3 +1,4 @@
-#+TITLE: Welcome to Kalesville:
-
-not a whole lot going on as far as docs at the moment, just trying to stand this thing up
+#+TITLE: Kalesville:
+*** Builds
+    * Dev: [[https://travis-ci.org/lloydkirk/kalesville.svg?branch=dev]]
+    * Latest Release [[https://github.com/lloydkirk/kalesville/tree/0.2.0][v0.2.0]]: [[https://travis-ci.org/lloydkirk/kalesville.svg?branch=0.2.0]]

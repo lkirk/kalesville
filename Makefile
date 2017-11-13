@@ -84,8 +84,10 @@ release-$(1):
 	git checkout dev ;\
 	sed -i -re"s/(.+image: .+:)[0-9]+\.[0-9]+\.[0-9]+/\1$$$$NEW_VERSION/g" \
 		$(WD)/docker/compose/prd/docker-compose.yml ;\
+	sed -i -re"s/[0-9]+\.[0-9]+\.[0-9]+/$$$$NEW_VERSION/g" \
+		$(WD)/README.org ;\
 	git commit -m'Increment $(1) version of docker-compose.yml files by Makefile [ci skip]' \
-		$(WD)/docker/compose/prd/docker-compose.yml ;\
+		$(WD)/docker/compose/prd/docker-compose.yml $(WD)/README.org ;\
 	git push ;\
 	git checkout master ;\
 	git merge --no-ff -m'Merge dev into master by Makefile' dev ;\
