@@ -3,40 +3,28 @@
   vars:
     ansible_python_interpreter: /home/core/python
     project_dir: /home/core/kalesville
-    docker_compose: "{{ project_dir }}/docker-compose"
+    docker_compose_bin: /home/core/bin/docker-compose
+    repo_root: "{{ playbook_dir }}/.."
+    docker_compose_yml: "{{ project_dir }}/prd/docker-compose.yml"
   tasks:
     - name: create location for docker-compose
       file:
-        path: "{{ docker_compose | dirname }}"
+        path: "{{ docker_compose_bin | dirname }}"
         state: directory
         mode: 0775
     - name: get docker-compose
       get_url:
         url: "https://github.com/docker/compose/releases/download/1.11.2/docker-compose-{{ ansible_system }}-{{ ansible_machine }}"
-        dest: "{{ docker_compose }}"
+        dest: "{{ docker_compose_bin }}"
         mode: 0554
         checksum: sha256:8d55adce12461c9f2abd907da1138b3e925919212611a54c94c4794ab0a975fc
-    - name: find compose files
-      find:
-        paths: "../"
-        patterns: "docker-compose.yml"
-        recurse: yes
-      register: docker_compose
     - name: create location for compose files
       file:
-        path: "{{ project_dir }}/{{ item | regex_replace('^../', '') | dirname }}"
-        owner: lkirk
-        group: lkirk
+        path: "{{ docker_compose_yml | dirname }}"
         mode: 0775
         state: directory
-      with_items: "{{ docker_compose.files | map(attribute='path') | list }}"
-    # - debug:
-    #     msg: "{{ item | regex_replace('^../', '') }}"
-    #   with_items: "{{ docker_compose.files | map(attribute='path') | list }}"
     - name: copy compose yaml files
       copy:
-        src: "{{ item }}"
-        dest: "{{ project_dir }}/{{ item | regex_replace('^../', '') }}"
+        src: "{{ repo_root }}/docker/compose/prd/docker-compose.yml"
+        dest: "{{ docker_compose_yml }}"
         mode: 0644
-        state: file
-      with_items: "{{ docker_compose.files | map(attribute='path') | list }}"

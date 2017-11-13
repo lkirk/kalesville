@@ -1,14 +1,15 @@
 ---
-- hosts: localhost
+- hosts: kalesville-dev
   vars:
+    ansible_python_interpreter: /home/core/python
   gather_facts: no
   tasks:
 
     - name: UP:kalesville-(PRD) 
       docker_service:
         project_name: kalesville
-        project_src: ./
-        # pull: yes
+        project_src: /home/core/kalesville/prd
+        pull: yes
         build: no
         state: present
       tags: up
@@ -19,5 +20,5 @@
         pull: yes
         build: no
         state: absent
-        project_src: ./
+        project_src: /home/core/kalesville/prd
       tags: down

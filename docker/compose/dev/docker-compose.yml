@@ -39,7 +39,7 @@ services:
       - ../../../docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
 
   db:
-    image: lloydkirk/kalesville-postgres:dev
+    image: lloydkirk/kalesville-pg:dev
     build:
       context: ../../../
       dockerfile: ./docker/postgres/Dockerfile
