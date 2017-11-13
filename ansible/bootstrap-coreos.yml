@@ -1,0 +1,37 @@
+---
+- hosts: kalesville-dev
+  gather_facts: False
+  tasks:
+    - name: create python executable
+      raw: |
+        if [[ ! -f /home/core/python ]]; then
+        cat <<" EOF" | sed -re's/^ //' > /home/core/python
+        #!/bin/bash
+        if [[ -z "$INSIDE_TOOLBOX" ]]; then
+        toolbox --quiet -EINSIDE_TOOLBOX=T --bind=/home/core:/home/core python "$@"
+        else
+        /usr/bin/python "$@"
+        fi
+        EOF
+        chmod +x /home/core/python
+        fi
+      args:
+        executable: /bin/bash
+    - name: add toolboxrc
+      raw: |
+        if [[ ! -f /home/core/.toolboxrc ]]; then
+            echo -e 'TOOLBOX_DOCKER_IMAGE=python\nTOOLBOX_DOCKER_TAG=2.7' > .toolboxrc
+        fi
+      args:
+        executable: /bin/bash
+    - name: replace bashrc
+      raw: |
+        if [[ -h /home/core/.bashrc ]]; then
+            rm /home/core/.bashrc
+            echo '[[ -d ~/bin ]] && export PATH="~/bin:$PATH"' > /home/core/.bashrc
+        elif [[ ! -f /home/core/.bashrc ]]; then
+            echo '[[ -d ~/bin ]] && export PATH="~/bin:$PATH"' > /home/core/.bashrc
+        fi
+      args:
+        executable: /bin/bash
+      

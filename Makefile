@@ -48,6 +48,12 @@ exec:
 
 run:
 	$(DOCKER-COMPOSE) run $(O) $(S) $(C)
+
+stop:
+	$(DOCKER-COMPOSE) stop $(O) $(S) $(C)
+
+start:
+	$(DOCKER-COMPOSE) start $(O) $(S) $(C)
 ### docker compose
 
 ### db

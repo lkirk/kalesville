@@ -15,9 +15,10 @@ services:
       - ../../../static/js/app:/opt/kalesville/static/js/app:ro
       - ../../../scripts:/opt/kalesville/scripts:ro
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=kalesville-web
+      - KALESVILLE_DBUSER=postgres
+      - KALESVILLE_DBPASS=postgres
+      - KALESVILLE_DBNAME=kalesville-web
+      - KALESVILLE_DBHOST=kalesville-pg
 
   nginx:
     image: lloydkirk/kalesville-nginx:dev
@@ -43,6 +44,7 @@ services:
       context: ../../../
       dockerfile: ./docker/postgres/Dockerfile
     hostname: kalesville-pg
+    # uncomment to persist data on the disk as /opt/kalesville/pg-dev
     # volumes:
     #   - /opt/kalesville/pg-dev:/var/lib/postgresql/data:rw
     environment:
