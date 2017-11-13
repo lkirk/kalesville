@@ -12,6 +12,7 @@ if $(egrep -q '[0-9]+\.[0-9]+\.[0-9]+' <<< "$TRAVIS_BRANCH"); then
     set -x
     docker push "lloydkirk/kalesville:$VERSION"
     docker push "lloydkirk/kalesville-nginx:$VERSION"
+    docker push "lloydkirk/kalesville-pg:$VERSION"
 else
     set -x
     docker push 'lloydkirk/kalesville:dev'

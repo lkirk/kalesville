@@ -26,7 +26,7 @@ services:
       - web
 
   db:
-    image: postgres:9.6
+    image: lloydkirk/kalesville-pg:0.1.2
     container_name: db
     hostname: kalesville-pg
     ports:
@@ -35,5 +35,3 @@ services:
       - /opt/kalesville/pg-prd:/var/lib/postgresql/data:rw
     env_file:
       - ~/.kalesville-env-prd
-    environment:
-      - POSTGRES_DB=kalesville-web
