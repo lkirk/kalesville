@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"reflect"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -64,43 +66,57 @@ func runServer(addr string, db *sql.DB) {
 	log.Fatal(http.ListenAndServe(addr, router))
 }
 
-func validateCLIArgs(a cliArgs) {
+func getArgNameFromEnv(envPrefix string, argName string) string {
+	key := strings.Join([]string{envPrefix, strings.ToUpper(argName)}, "_")
+	return os.Getenv(key)
+}
+
+func validateCLIArgsCheckEnv(a cliArgs, envPrefix string) cliArgs {
+	// Get environment variables from the struct field names
+	// The format for this is "envPrefix_fieldName"
+	// Cli arguments take precedence over env variables
+
 	args := reflect.TypeOf(a)
 	argValues := reflect.ValueOf(&a).Elem()
+
 	for i := 0; i < args.NumField(); i++ {
 		arg := args.Field(i)
-		tag := arg.Tag.Get("required")
-
-		required := false
-		if tag == "true" {
-			required = true
-		}
-
-		if required {
+		required := arg.Tag.Get("required")
+		if required == "true" {
 			value := argValues.Field(i).Interface()
+			envValue := getArgNameFromEnv(envPrefix, arg.Name)
+			if value == "" {
+				if envValue != "" {
+					argValues.Field(i).SetString(envValue)
+					value = envValue
+				}
+			}
 			if value == "" {
 				msg := fmt.Sprintf(
-					"cli: %v is a required field", arg.Name)
+					"%s: %s is a required field",
+					os.Args[0],
+					arg.Name)
 				log.Fatal(errors.New(msg))
 			}
 
 		}
 
 	}
+	return a
 }
 
-func parseAndValidateCLIArgs() (args cliArgs) {
+func parseAndValidateCLIArgsOrEnvVar() (args cliArgs) {
 	flag.StringVar(&args.Addr, "addr", ":8000",
-		"web address to accept requests from")
-	flag.StringVar(&args.DbUser, "db-user", "", "database username")
-	flag.StringVar(&args.DbPass, "db-pass", "", "database password")
-	flag.StringVar(&args.DbName, "db-name", "", "database name")
-	flag.StringVar(&args.DbHost, "db-host", "", "database hostname")
-	flag.IntVar(&args.DbPort, "db-port", 5432, "database port")
+		"web address to accept requests from.  env var: (KALESVILLE_ADDR)")
+	flag.StringVar(&args.DbUser, "db-user", "", "database username. env var: (KALESVILLE_DBUSER)")
+	flag.StringVar(&args.DbPass, "db-pass", "", "database password. env var: (KALESVILLE_DBPASS)")
+	flag.StringVar(&args.DbName, "db-name", "", "database name. env var: (KALESVILLE_DBNAME)")
+	flag.StringVar(&args.DbHost, "db-host", "", "database hostname. env var: (KALESVILLE_DBHOST)")
+	flag.IntVar(&args.DbPort, "db-port", 5432, "database port. env var: (KALESVILLE_DBPORT)")
 
 	flag.Parse()
 
-	validateCLIArgs(args)
+	args = validateCLIArgsCheckEnv(args, "KALESVILLE")
 
 	return args
 }
@@ -115,7 +131,7 @@ type cliArgs struct {
 }
 
 func main() {
-	args := parseAndValidateCLIArgs()
+	args := parseAndValidateCLIArgsOrEnvVar()
 
 	db := initializeDB(
 		args.DbUser,
